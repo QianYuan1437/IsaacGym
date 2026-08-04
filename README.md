@@ -262,25 +262,43 @@ python legged_gym/scripts/train.py --task=go2 --headless --resume
 python legged_gym/scripts/train.py --task=go2
 ```
 
-### 2.3 后台训练
+### 2.3 后台训练（SSH 断开后继续运行）
+
+推荐使用 **tmux**——即使关闭 Windows 上的 SSH 终端，训练也不会中断，重新连接后还可以切回查看进度：
 
 ```bash
+ssh user@host                  # Windows 终端下 SSH 连接
+
+# 1. 创建 tmux 会话
+tmux new -s train
+
+# 2. 在会话内启动训练
 conda activate isaacgym
 cd ~/RL/code/unitree_rl_gym/unitree_rl_gym
+python legged_gym/scripts/train.py --task=go2 --headless
 
-# 使用 setsid 启动，关闭终端后仍运行
-setsid python legged_gym/scripts/train.py --task=go2 --headless \
-    > ~/train_go2.log 2>&1 < /dev/null &
+# 3. 断开会话（训练继续运行）
+#    按 Ctrl+B 然后按 D
 
-# 查看日志
-tail -f ~/train_go2.log
+# 4. 现在可以安全关闭 SSH 终端了
 
-# 查看进程
-ps aux | grep train.py
-
-# 停止训练
-kill <PID>
+# 5. 重新 SSH 登录后，重新连接看进度
+tmux attach -t train
 ```
+
+**tmux 常用按键**：
+
+| 操作 | 按键 / 命令 |
+|------|------------|
+| 新建会话 | `tmux new -s <名称>` |
+| 断开会话 | `Ctrl+B` 然后 `D` |
+| 重新连接 | `tmux attach -t <名称>` |
+| 列出所有会话 | `tmux ls` |
+| 关闭会话 | `tmux kill-session -t <名称>` |
+| 上下翻页 | `Ctrl+B` 然后 `[`，方向键翻页，`q` 退出 |
+| 横向分屏 | `Ctrl+B` 然后 `%` |
+| 竖向分屏 | `Ctrl+B` 然后 `"` |
+| 切换面板 | `Ctrl+B` 然后方向键 |
 
 ### 2.4 查看训练曲线
 
@@ -347,6 +365,14 @@ kill <PID>                                       # 停止训练
 tensorboard --logdir=logs/                       # 启动 TensorBoard
 ```
 
+```bash
+# tmux 会话管理
+tmux new -s train                                # 新建会话
+tmux attach -t train                             # 重新连接会话
+tmux ls                                          # 查看所有会话
+tmux kill-session -t train                       # 关闭会话
+```
+
 ---
 
 ## 第五章：注意事项与原理解释
@@ -387,4 +413,4 @@ Unitree RL Gym 的训练脚本已正确处理此顺序。
 
 - 全程使用 `--headless`，渲染窗口可能导致崩溃，且拖慢训练速度
 - 查看效果用 MuJoCo（G1/H1）或 IsaacGym play.py（Go2）
-- 后台训练用 `setsid` 或 `screen`/`tmux`
+- 后台训练用 **tmux**（`tmux new -s train`），SSH 断开不中断
