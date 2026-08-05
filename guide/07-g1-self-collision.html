@@ -1,0 +1,432 @@
+
+<!DOCTYPE HTML>
+<html lang="zh" >
+    <head>
+        <meta charset="UTF-8">
+        <title>第七章：G1 人形机器人自碰撞避免论文复现（g1_sc） · 机器人强化学习环境配置与训练指南</title>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="description" content="">
+        <meta name="generator" content="HonKit 6.2.2">
+        
+        
+        
+    
+    <link rel="stylesheet" href="../gitbook/style.css">
+
+    
+            
+                
+                <link rel="stylesheet" href="../gitbook/@honkit/honkit-plugin-highlight/website.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-search/search.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/@honkit/honkit-plugin-fontsettings/website.css">
+                
+            
+        
+
+    
+
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+
+        
+    
+    
+    <meta name="HandheldFriendly" content="true"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="apple-touch-icon-precomposed" sizes="152x152" href="../gitbook/images/apple-touch-icon-precomposed-152.png">
+    <link rel="shortcut icon" href="../gitbook/images/favicon.ico" type="image/x-icon">
+
+    
+    <link rel="next" href="08-appendix-g1-sc-detailed.html" />
+    
+    
+    <link rel="prev" href="06-ppo-details.html" />
+    
+
+    </head>
+    <body>
+        
+<div class="book honkit-cloak">
+    <div class="book-summary">
+        
+            
+<div id="book-search-input" role="search">
+    <input type="text" placeholder="輸入並搜尋" />
+</div>
+
+            
+                <nav role="navigation">
+                
+
+
+<ul class="summary">
+    
+    
+
+    
+
+    
+        
+        
+    
+        <li class="chapter " data-level="1.1" data-path="../">
+            
+                <a href="../">
+            
+                    
+                    简介
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2" data-path="01-install.html">
+            
+                <a href="01-install.html">
+            
+                    
+                    第一章：完整安装与配置
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3" data-path="02-training.html">
+            
+                <a href="02-training.html">
+            
+                    
+                    第二章：训练
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4" data-path="03-viewing-results.html">
+            
+                <a href="03-viewing-results.html">
+            
+                    
+                    第三章：查看训练效果
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5" data-path="04-quick-reference.html">
+            
+                <a href="04-quick-reference.html">
+            
+                    
+                    第四章：常用快捷操作
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6" data-path="05-notes-and-principles.html">
+            
+                <a href="05-notes-and-principles.html">
+            
+                    
+                    第五章：注意事项与原理解释
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7" data-path="06-ppo-details.html">
+            
+                <a href="06-ppo-details.html">
+            
+                    
+                    第六章：PPO 算法详解与参数调优
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter active" data-level="1.8" data-path="07-g1-self-collision.html">
+            
+                <a href="07-g1-self-collision.html">
+            
+                    
+                    第七章：G1 人形机器人自碰撞避免论文复现（g1_sc）
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.9" data-path="08-appendix-g1-sc-detailed.html">
+            
+                <a href="08-appendix-g1-sc-detailed.html">
+            
+                    
+                    附录：G1 自碰撞复现详细指南
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+    
+
+    <li class="divider"></li>
+
+    <li>
+        <a href="https://github.com/honkit/honkit" target="blank" class="gitbook-link">
+            本書使用 HonKit 釋出
+        </a>
+    </li>
+</ul>
+
+
+                </nav>
+            
+        
+    </div>
+
+    <div class="book-body">
+        
+            <div class="body-inner">
+                
+                    
+
+<div class="book-header" role="navigation">
+    
+
+    <!-- Title -->
+    <h1>
+        <i class="fa fa-circle-o-notch fa-spin"></i>
+        <a href=".." >第七章：G1 人形机器人自碰撞避免论文复现（g1_sc）</a>
+    </h1>
+</div>
+
+
+
+
+                    <div class="page-wrapper" tabindex="-1" role="main">
+                        <div class="page-inner">
+                            
+<div id="book-search-results">
+    <div class="search-noresults">
+    
+                                <section class="normal markdown-section">
+                                
+                                <h1 id="第七章：g1-人形机器人自碰撞避免论文复现（g1sc）">第七章：G1 人形机器人自碰撞避免论文复现（g1_sc）</h1>
+<blockquote>
+<p>复现论文：<em>Humanoid Self-Collision Avoidance Using Whole-Body Control with Control Barrier Functions</em>（Khazoom 等，IEEE-RAS Humanoids 2022，MIT）
+论文 PDF：<code>~/RL/docx/</code>
+完整独立指南：<a href="08-appendix-g1-sc-detailed.html">附录：G1 自碰撞复现详细指南</a>
+训练命令：<code>python legged_gym/scripts/train.py --task=g1_sc --headless</code></p>
+</blockquote>
+<h3 id="71-论文与复现思路">7.1 论文与复现思路</h3>
+<p>论文为 MIT Humanoid 提出 <strong>CBF-WBC</strong>（控制障碍函数 + 全身控制器）：用球/胶囊近似机器人几何，对有符号距离 <code>h(q) = ‖pA-pB‖-(ρA+ρB)</code> 施加 CBF 硬约束 <code>ḣ+αh≥0</code>，在 QP 中保证"永不自碰撞"，并用人工势场（APF，Eq.23）作基线对比。</p>
+<p>本复现将这套安全思想翻译进 <strong>PPO 奖励塑形</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>论文要素</th>
+<th>本复现实现</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>CBF 约束 <code>ḣ+αh≥0</code></td>
+<td><code>_reward_self_collision_cbf</code>：<code>exp(-α·(d-safe))·(1+β·max(0,-ḋ))</code>，指数势垒 + 接近速率项</td>
+</tr>
+<tr>
+<td>APF 软惩罚（Eq.23）</td>
+<td><code>_reward_self_collision_apf</code>：<code>max(0, safe-d)²</code>，仅阈值内生效</td>
+</tr>
+<tr>
+<td>关节限位 CBF</td>
+<td>legged_gym 自带 <code>dof_pos_limits</code> / <code>soft_dof_pos_limit</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="72-新增代码">7.2 新增代码</h3>
+<pre><code>legged_gym/envs/g1/g1_self_collision.py         # G1SelfCollisionRobot 环境类
+legged_gym/envs/g1/g1_self_collision_config.py  # 配置（碰撞对、奖励、PPO）
+legged_gym/envs/__init__.py                     # 注册任务 g1_sc
+</code></pre><p>核心：<code>_sc_distances()</code> 用 <code>rigid_body_states_view</code>（每步刷新）计算各碰撞体对中心距；CBF 奖励里的 <code>ḋ</code> 有限差分项对应论文的动力学约束，是区别于纯位置 APF 的关键。</p>
+<h3 id="73-关键配置">7.3 关键配置</h3>
+<ul>
+<li><strong><code>only_positive_rewards = False</code></strong>：必须关闭基类默认的奖励裁剪（legged_robot.py:174），否则负惩罚项全部被剪掉、无法产生梯度；</li>
+<li>碰撞对在 <code>cfg.self_collision.pairs</code> 定义，12 关节 G1 只有腿部 4 对生效，臂部对自动跳过；换 <code>g1_29dof</code> 会自动激活臂部对；</li>
+<li>对比实验：<code>rewards.scales</code> 中每次只开 <code>self_collision_cbf</code> 或 <code>self_collision_apf</code> 之一，配不同 <code>--run_name</code> 即可在 TensorBoard 对比。</li>
+</ul>
+<h3 id="74-训练--验证">7.4 训练 / 验证</h3>
+<pre><code class="lang-bash">conda activate isaacgym
+<span class="hljs-built_in">cd</span> ~/RL/code/unitree_rl_gym/unitree_rl_gym
+
+<span class="hljs-comment"># 训练（默认 3000 轮，RTX 3060 约 1 小时）</span>
+python legged_gym/scripts/train.py --task=g1_sc --headless
+
+<span class="hljs-comment"># 可视化验证（加载 logs/g1_sc/ 最新模型）</span>
+python legged_gym/scripts/play.py --task=g1_sc
+
+<span class="hljs-comment"># 监控</span>
+tensorboard --logdir=~/RL/code/unitree_rl_gym/unitree_rl_gym/logs/
+<span class="hljs-comment"># 关键指标：Episode/rew_self_collision_cbf（应趋近 0，即不再自碰撞）</span>
+</code></pre>
+<blockquote>
+<p>训练当前在 tmux 会话 <code>train</code> 中运行：<code>tmux attach -t train</code> 查看进度。</p>
+</blockquote>
+
+                                
+                                </section>
+                            
+    </div>
+    <div class="search-results">
+        <div class="has-results">
+            
+            <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+            <ul class="search-results-list"></ul>
+            
+        </div>
+        <div class="no-results">
+            
+            <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+            
+        </div>
+    </div>
+</div>
+
+                        </div>
+                    </div>
+                
+            </div>
+
+            
+                
+                <a href="06-ppo-details.html" class="navigation navigation-prev " aria-label="Previous page: 第六章：PPO 算法详解与参数调优">
+                    <i class="fa fa-angle-left"></i>
+                </a>
+                
+                
+                <a href="08-appendix-g1-sc-detailed.html" class="navigation navigation-next " aria-label="Next page: 附录：G1 自碰撞复现详细指南">
+                    <i class="fa fa-angle-right"></i>
+                </a>
+                
+            
+        
+    </div>
+
+    <script>
+        var gitbook = gitbook || [];
+        gitbook.push(function() {
+            gitbook.page.hasChanged({"page":{"title":"第七章：G1 人形机器人自碰撞避免论文复现（g1_sc）","level":"1.8","depth":1,"next":{"title":"附录：G1 自碰撞复现详细指南","level":"1.9","depth":1,"path":"guide/08-appendix-g1-sc-detailed.md","ref":"guide/08-appendix-g1-sc-detailed.md","articles":[]},"previous":{"title":"第六章：PPO 算法详解与参数调优","level":"1.7","depth":1,"path":"guide/06-ppo-details.md","ref":"guide/06-ppo-details.md","articles":[]},"dir":"ltr"},"config":{"plugins":[],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"theme":"default","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56},"embedFonts":false},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"机器人强化学习环境配置与训练指南","language":"zh","gitbook":"*","description":"基于 NVIDIA IsaacGym + RSL-RL + Unitree RL Gym + MuJoCo 的完整操作手册"},"file":{"path":"guide/07-g1-self-collision.md","mtime":"2026-08-05T16:29:43.636Z","type":"markdown"},"gitbook":{"version":"6.2.2","time":"2026-08-05T16:35:02.261Z"},"basePath":"..","book":{"language":""}});
+        });
+    </script>
+</div>
+
+        
+    <noscript>
+        <style>
+            .honkit-cloak {
+                display: block !important;
+            }
+        </style>
+    </noscript>
+    <script>
+        // Restore sidebar state as critical path for prevent layout shift
+        function __init__getSidebarState(defaultValue){
+            var baseKey = "";
+            var key = baseKey + ":sidebar";
+            try {
+                var value = localStorage[key];
+                if (value === undefined) {
+                    return defaultValue;
+                }
+                var parsed = JSON.parse(value);
+                return parsed == null ? defaultValue : parsed;
+            } catch (e) {
+                return defaultValue;
+            }
+        }
+        function __init__restoreLastSidebarState() {
+            var isMobile = window.matchMedia("(max-width: 600px)").matches;
+            if (isMobile) {
+                // Init last state if not mobile
+                return;
+            }
+            var sidebarState = __init__getSidebarState(true);
+            var book = document.querySelector(".book");
+            // Show sidebar if it enabled
+            if (sidebarState && book) {
+                book.classList.add("without-animation", "with-summary");
+            }
+        }
+
+        try {
+            __init__restoreLastSidebarState();
+        } finally {
+            var book = document.querySelector(".book");
+            book.classList.remove("honkit-cloak");
+        }
+    </script>
+    <script src="../gitbook/gitbook.js"></script>
+    <script src="../gitbook/theme.js"></script>
+    
+        
+        <script src="../gitbook/gitbook-plugin-search/search-engine.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-search/search.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-lunr/lunr.min.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-lunr/search-lunr.js"></script>
+        
+    
+        
+        <script src="../gitbook/@honkit/honkit-plugin-fontsettings/fontsettings.js"></script>
+        
+    
+
+    </body>
+</html>
+

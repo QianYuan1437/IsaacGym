@@ -1,0 +1,10 @@
+# GitBook / honkit build output
+_book/
+_build/
+node_modules/
+
+# working / heavy dirs not part of the book
+code/
+configs/
+docx/
+SESSION_STATE.md

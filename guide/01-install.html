@@ -1,0 +1,497 @@
+
+<!DOCTYPE HTML>
+<html lang="zh" >
+    <head>
+        <meta charset="UTF-8">
+        <title>第一章：完整安装与配置 · 机器人强化学习环境配置与训练指南</title>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="description" content="">
+        <meta name="generator" content="HonKit 6.2.2">
+        
+        
+        
+    
+    <link rel="stylesheet" href="../gitbook/style.css">
+
+    
+            
+                
+                <link rel="stylesheet" href="../gitbook/@honkit/honkit-plugin-highlight/website.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-search/search.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/@honkit/honkit-plugin-fontsettings/website.css">
+                
+            
+        
+
+    
+
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+
+        
+    
+    
+    <meta name="HandheldFriendly" content="true"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="apple-touch-icon-precomposed" sizes="152x152" href="../gitbook/images/apple-touch-icon-precomposed-152.png">
+    <link rel="shortcut icon" href="../gitbook/images/favicon.ico" type="image/x-icon">
+
+    
+    <link rel="next" href="02-training.html" />
+    
+    
+    <link rel="prev" href="../" />
+    
+
+    </head>
+    <body>
+        
+<div class="book honkit-cloak">
+    <div class="book-summary">
+        
+            
+<div id="book-search-input" role="search">
+    <input type="text" placeholder="輸入並搜尋" />
+</div>
+
+            
+                <nav role="navigation">
+                
+
+
+<ul class="summary">
+    
+    
+
+    
+
+    
+        
+        
+    
+        <li class="chapter " data-level="1.1" data-path="../">
+            
+                <a href="../">
+            
+                    
+                    简介
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter active" data-level="1.2" data-path="01-install.html">
+            
+                <a href="01-install.html">
+            
+                    
+                    第一章：完整安装与配置
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3" data-path="02-training.html">
+            
+                <a href="02-training.html">
+            
+                    
+                    第二章：训练
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4" data-path="03-viewing-results.html">
+            
+                <a href="03-viewing-results.html">
+            
+                    
+                    第三章：查看训练效果
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5" data-path="04-quick-reference.html">
+            
+                <a href="04-quick-reference.html">
+            
+                    
+                    第四章：常用快捷操作
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6" data-path="05-notes-and-principles.html">
+            
+                <a href="05-notes-and-principles.html">
+            
+                    
+                    第五章：注意事项与原理解释
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7" data-path="06-ppo-details.html">
+            
+                <a href="06-ppo-details.html">
+            
+                    
+                    第六章：PPO 算法详解与参数调优
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8" data-path="07-g1-self-collision.html">
+            
+                <a href="07-g1-self-collision.html">
+            
+                    
+                    第七章：G1 人形机器人自碰撞避免论文复现（g1_sc）
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.9" data-path="08-appendix-g1-sc-detailed.html">
+            
+                <a href="08-appendix-g1-sc-detailed.html">
+            
+                    
+                    附录：G1 自碰撞复现详细指南
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+    
+
+    <li class="divider"></li>
+
+    <li>
+        <a href="https://github.com/honkit/honkit" target="blank" class="gitbook-link">
+            本書使用 HonKit 釋出
+        </a>
+    </li>
+</ul>
+
+
+                </nav>
+            
+        
+    </div>
+
+    <div class="book-body">
+        
+            <div class="body-inner">
+                
+                    
+
+<div class="book-header" role="navigation">
+    
+
+    <!-- Title -->
+    <h1>
+        <i class="fa fa-circle-o-notch fa-spin"></i>
+        <a href=".." >第一章：完整安装与配置</a>
+    </h1>
+</div>
+
+
+
+
+                    <div class="page-wrapper" tabindex="-1" role="main">
+                        <div class="page-inner">
+                            
+<div id="book-search-results">
+    <div class="search-noresults">
+    
+                                <section class="normal markdown-section">
+                                
+                                <h1 id="第一章：完整安装与配置">第一章：完整安装与配置</h1>
+<p>本章记录在 <strong>Ubuntu 24.04 原生 Linux + RTX 3060</strong> 上从零搭建环境的全过程。</p>
+<h3 id="11-系统环境检查">1.1 系统环境检查</h3>
+<pre><code class="lang-bash"><span class="hljs-comment"># 确认 GPU 可用</span>
+nvidia-smi
+<span class="hljs-comment"># 预期输出：NVIDIA GeForce RTX 3060, 驱动 595.84, CUDA 13.2</span>
+
+<span class="hljs-comment"># 确认 conda 可用</span>
+conda --version
+</code></pre>
+<h3 id="12-安装系统依赖">1.2 安装系统依赖</h3>
+<pre><code class="lang-bash"><span class="hljs-built_in">sudo</span> apt update
+<span class="hljs-built_in">sudo</span> apt install -y build-essential cmake mesa-utils mesa-vulkan-drivers
+</code></pre>
+<blockquote>
+<p>本机 <code>libx11-dev</code>、<code>libxext-dev</code> 等库已通过 ROS 2 Jazzy 预先安装，无需重复操作。</p>
+</blockquote>
+<h3 id="13-创建-conda-环境">1.3 创建 Conda 环境</h3>
+<pre><code class="lang-bash"><span class="hljs-comment"># 创建环境（必须 Python 3.8，IsaacGym Preview 4 的 .so 绑定了 libpython3.8.so）</span>
+conda create -n isaacgym python=3.8 -y
+conda activate isaacgym
+</code></pre>
+<h3 id="14-安装-pytorch--numpy">1.4 安装 PyTorch + NumPy</h3>
+<pre><code class="lang-bash"><span class="hljs-comment"># 安装 PyTorch 2.0.0 + CUDA 11.8（系统 CUDA 13.2 驱动向下兼容）</span>
+pip install torch==2.0.0 torchvision==0.15.1 --index-url https://download.pytorch.org/whl/cu118
+
+<span class="hljs-comment"># 必须固定 NumPy 1.20，新版 API 不兼容 IsaacGym 的 reward 计算</span>
+pip install numpy==1.20.0
+</code></pre>
+<p>验证 CUDA：</p>
+<pre><code class="lang-bash">python -c <span class="hljs-string">"import torch; print(torch.cuda.is_available()); print(torch.cuda.get_device_name(0))"</span>
+<span class="hljs-comment"># True</span>
+<span class="hljs-comment"># NVIDIA GeForce RTX 3060</span>
+</code></pre>
+<h3 id="15-安装-isaacgym">1.5 安装 IsaacGym</h3>
+<ol>
+<li>前往 <a href="https://developer.nvidia.com/isaac-gym" target="_blank">NVIDIA Developer</a> 注册并下载 <code>IsaacGym_Preview_4_Package.tar.gz</code>（或 <code>.gz</code>）。</li>
+<li>将文件放到 <code>~/Download/</code> 或任意位置，然后解压安装：</li>
+</ol>
+<pre><code class="lang-bash"><span class="hljs-comment"># 解压</span>
+<span class="hljs-built_in">cp</span> ~/Download/isaac-gym-preview-4.gz ~/
+<span class="hljs-built_in">cd</span> ~/ &amp;&amp; tar -xzf isaac-gym-preview-4.gz
+
+<span class="hljs-comment"># 安装（editable 模式）</span>
+conda activate isaacgym
+<span class="hljs-built_in">cd</span> ~/isaacgym/python &amp;&amp; pip install -e .
+</code></pre>
+<p>验证 GPU Physics：</p>
+<pre><code class="lang-bash">python -c <span class="hljs-string">"
+import isaacgym        # 注意：isaacgym 必须在 torch 之前 import！
+import torch
+from isaacgym import gymapi
+gym = gymapi.acquire_gym()
+p = gymapi.SimParams()
+p.physx.use_gpu = True
+p.use_gpu_pipeline = True
+s = gym.create_sim(0, 0, gymapi.SIM_PHYSX, p)
+gym.destroy_sim(s)
+print('GPU Physics OK')
+"</span>
+<span class="hljs-comment"># 预期输出：+++ Using GPU PhysX</span>
+<span class="hljs-comment">#          Physics Device: cuda:0</span>
+<span class="hljs-comment">#          GPU Pipeline: enabled</span>
+</code></pre>
+<h3 id="16-安装-rsl-rl">1.6 安装 RSL-RL</h3>
+<pre><code class="lang-bash"><span class="hljs-built_in">mkdir</span> -p ~/RL/code/unitree_rl_gym
+<span class="hljs-built_in">cd</span> ~/RL/code/unitree_rl_gym
+
+git <span class="hljs-built_in">clone</span> https://github.com/leggedrobotics/rsl_rl.git
+<span class="hljs-built_in">cd</span> rsl_rl &amp;&amp; git checkout v1.0.2 &amp;&amp; pip install -e .
+</code></pre>
+<h3 id="17-安装-unitree-rl-gym">1.7 安装 Unitree RL Gym</h3>
+<pre><code class="lang-bash"><span class="hljs-built_in">cd</span> ~/RL/code/unitree_rl_gym
+
+git <span class="hljs-built_in">clone</span> https://github.com/unitreerobotics/unitree_rl_gym.git
+<span class="hljs-built_in">cd</span> unitree_rl_gym
+
+<span class="hljs-comment"># isaacgym 是本地 editable 安装，pip 依赖检测会失败，使用 --no-deps 绕过</span>
+pip install --no-deps -e .
+</code></pre>
+<blockquote>
+<p><code>--no-deps</code> 后需手动补装依赖：<code>pip install tensorboard matplotlib</code></p>
+</blockquote>
+<h3 id="18-安装-mujoco">1.8 安装 MuJoCo</h3>
+<pre><code class="lang-bash">pip install mujoco==3.2.3
+</code></pre>
+<h3 id="19-配置环境变量">1.9 配置环境变量</h3>
+<h4 id="191-conda-环境激活脚本">1.9.1 Conda 环境激活脚本</h4>
+<p>创建 <code>~/anaconda3/envs/isaacgym/etc/conda/activate.d/env_vars.sh</code>：</p>
+<pre><code class="lang-bash"><span class="hljs-built_in">mkdir</span> -p ~/anaconda3/envs/isaacgym/etc/conda/activate.d/
+<span class="hljs-built_in">cat</span> &gt; ~/anaconda3/envs/isaacgym/etc/conda/activate.d/env_vars.sh &lt;&lt; <span class="hljs-string">'EOF'</span>
+<span class="hljs-comment">#!/bin/bash</span>
+<span class="hljs-built_in">export</span> LD_LIBRARY_PATH=<span class="hljs-string">"<span class="hljs-variable">$CONDA_PREFIX</span>/lib:<span class="hljs-variable">$LD_LIBRARY_PATH</span>"</span>
+<span class="hljs-built_in">export</span> MUJOCO_GL=glfw
+EOF
+<span class="hljs-built_in">chmod</span> +x ~/anaconda3/envs/isaacgym/etc/conda/activate.d/env_vars.sh
+</code></pre>
+<blockquote>
+<ul>
+<li><code>$CONDA_PREFIX/lib</code> 使 IsaacGym 能找到 <code>libpython3.8.so</code></li>
+<li><code>MUJOCO_GL=glfw</code> 指定 MuJoCo 渲染后端</li>
+<li><strong>原生 Linux 不需要</strong> <code>/usr/lib/wsl/lib</code>（WSL2 专属，CUDA 库已在标准路径）</li>
+</ul>
+</blockquote>
+<h4 id="192-bashrc-追加">1.9.2 <code>~/.bashrc</code> 追加</h4>
+<p>在 <code>~/.bashrc</code> 末尾追加：</p>
+<pre><code class="lang-bash"><span class="hljs-comment"># ============================================================</span>
+<span class="hljs-comment"># Robot RL Environment (Isaac Gym + MuJoCo)</span>
+<span class="hljs-comment"># ============================================================</span>
+<span class="hljs-built_in">export</span> MUJOCO_GL=glfw
+</code></pre>
+<h3 id="110-最终验证">1.10 最终验证</h3>
+<pre><code class="lang-bash">conda activate isaacgym
+<span class="hljs-built_in">cd</span> ~/RL/code/unitree_rl_gym/unitree_rl_gym
+
+<span class="hljs-comment"># 跑 3 轮训练测试（不渲染窗口）</span>
+python legged_gym/scripts/train.py --task=go2 --headless --max_iterations=3
+</code></pre>
+<p>看到类似输出即配置成功：</p>
+<pre><code>+++ Using GPU PhysX
+Physics Device: cuda:0
+GPU Pipeline: enabled
+...
+Computation: ~95000 steps/s
+Learning iteration 3/3
+</code></pre>
+                                
+                                </section>
+                            
+    </div>
+    <div class="search-results">
+        <div class="has-results">
+            
+            <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+            <ul class="search-results-list"></ul>
+            
+        </div>
+        <div class="no-results">
+            
+            <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+            
+        </div>
+    </div>
+</div>
+
+                        </div>
+                    </div>
+                
+            </div>
+
+            
+                
+                <a href="../" class="navigation navigation-prev " aria-label="Previous page: 简介">
+                    <i class="fa fa-angle-left"></i>
+                </a>
+                
+                
+                <a href="02-training.html" class="navigation navigation-next " aria-label="Next page: 第二章：训练">
+                    <i class="fa fa-angle-right"></i>
+                </a>
+                
+            
+        
+    </div>
+
+    <script>
+        var gitbook = gitbook || [];
+        gitbook.push(function() {
+            gitbook.page.hasChanged({"page":{"title":"第一章：完整安装与配置","level":"1.2","depth":1,"next":{"title":"第二章：训练","level":"1.3","depth":1,"path":"guide/02-training.md","ref":"guide/02-training.md","articles":[]},"previous":{"title":"简介","level":"1.1","depth":1,"path":"README.md","ref":"README.md","articles":[]},"dir":"ltr"},"config":{"plugins":[],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"theme":"default","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56},"embedFonts":false},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"机器人强化学习环境配置与训练指南","language":"zh","gitbook":"*","description":"基于 NVIDIA IsaacGym + RSL-RL + Unitree RL Gym + MuJoCo 的完整操作手册"},"file":{"path":"guide/01-install.md","mtime":"2026-08-05T16:28:37.970Z","type":"markdown"},"gitbook":{"version":"6.2.2","time":"2026-08-05T16:35:02.261Z"},"basePath":"..","book":{"language":""}});
+        });
+    </script>
+</div>
+
+        
+    <noscript>
+        <style>
+            .honkit-cloak {
+                display: block !important;
+            }
+        </style>
+    </noscript>
+    <script>
+        // Restore sidebar state as critical path for prevent layout shift
+        function __init__getSidebarState(defaultValue){
+            var baseKey = "";
+            var key = baseKey + ":sidebar";
+            try {
+                var value = localStorage[key];
+                if (value === undefined) {
+                    return defaultValue;
+                }
+                var parsed = JSON.parse(value);
+                return parsed == null ? defaultValue : parsed;
+            } catch (e) {
+                return defaultValue;
+            }
+        }
+        function __init__restoreLastSidebarState() {
+            var isMobile = window.matchMedia("(max-width: 600px)").matches;
+            if (isMobile) {
+                // Init last state if not mobile
+                return;
+            }
+            var sidebarState = __init__getSidebarState(true);
+            var book = document.querySelector(".book");
+            // Show sidebar if it enabled
+            if (sidebarState && book) {
+                book.classList.add("without-animation", "with-summary");
+            }
+        }
+
+        try {
+            __init__restoreLastSidebarState();
+        } finally {
+            var book = document.querySelector(".book");
+            book.classList.remove("honkit-cloak");
+        }
+    </script>
+    <script src="../gitbook/gitbook.js"></script>
+    <script src="../gitbook/theme.js"></script>
+    
+        
+        <script src="../gitbook/gitbook-plugin-search/search-engine.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-search/search.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-lunr/lunr.min.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-lunr/search-lunr.js"></script>
+        
+    
+        
+        <script src="../gitbook/@honkit/honkit-plugin-fontsettings/fontsettings.js"></script>
+        
+    
+
+    </body>
+</html>
+

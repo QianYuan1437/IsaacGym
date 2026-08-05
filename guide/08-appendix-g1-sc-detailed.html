@@ -1,0 +1,654 @@
+
+<!DOCTYPE HTML>
+<html lang="zh" >
+    <head>
+        <meta charset="UTF-8">
+        <title>附录：G1 自碰撞复现详细指南 · 机器人强化学习环境配置与训练指南</title>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="description" content="">
+        <meta name="generator" content="HonKit 6.2.2">
+        
+        
+        
+    
+    <link rel="stylesheet" href="../gitbook/style.css">
+
+    
+            
+                
+                <link rel="stylesheet" href="../gitbook/@honkit/honkit-plugin-highlight/website.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-search/search.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/@honkit/honkit-plugin-fontsettings/website.css">
+                
+            
+        
+
+    
+
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+
+        
+    
+    
+    <meta name="HandheldFriendly" content="true"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="apple-touch-icon-precomposed" sizes="152x152" href="../gitbook/images/apple-touch-icon-precomposed-152.png">
+    <link rel="shortcut icon" href="../gitbook/images/favicon.ico" type="image/x-icon">
+
+    
+    
+    <link rel="prev" href="07-g1-self-collision.html" />
+    
+
+    </head>
+    <body>
+        
+<div class="book honkit-cloak">
+    <div class="book-summary">
+        
+            
+<div id="book-search-input" role="search">
+    <input type="text" placeholder="輸入並搜尋" />
+</div>
+
+            
+                <nav role="navigation">
+                
+
+
+<ul class="summary">
+    
+    
+
+    
+
+    
+        
+        
+    
+        <li class="chapter " data-level="1.1" data-path="../">
+            
+                <a href="../">
+            
+                    
+                    简介
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2" data-path="01-install.html">
+            
+                <a href="01-install.html">
+            
+                    
+                    第一章：完整安装与配置
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3" data-path="02-training.html">
+            
+                <a href="02-training.html">
+            
+                    
+                    第二章：训练
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4" data-path="03-viewing-results.html">
+            
+                <a href="03-viewing-results.html">
+            
+                    
+                    第三章：查看训练效果
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5" data-path="04-quick-reference.html">
+            
+                <a href="04-quick-reference.html">
+            
+                    
+                    第四章：常用快捷操作
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6" data-path="05-notes-and-principles.html">
+            
+                <a href="05-notes-and-principles.html">
+            
+                    
+                    第五章：注意事项与原理解释
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7" data-path="06-ppo-details.html">
+            
+                <a href="06-ppo-details.html">
+            
+                    
+                    第六章：PPO 算法详解与参数调优
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8" data-path="07-g1-self-collision.html">
+            
+                <a href="07-g1-self-collision.html">
+            
+                    
+                    第七章：G1 人形机器人自碰撞避免论文复现（g1_sc）
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter active" data-level="1.9" data-path="08-appendix-g1-sc-detailed.html">
+            
+                <a href="08-appendix-g1-sc-detailed.html">
+            
+                    
+                    附录：G1 自碰撞复现详细指南
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+    
+
+    <li class="divider"></li>
+
+    <li>
+        <a href="https://github.com/honkit/honkit" target="blank" class="gitbook-link">
+            本書使用 HonKit 釋出
+        </a>
+    </li>
+</ul>
+
+
+                </nav>
+            
+        
+    </div>
+
+    <div class="book-body">
+        
+            <div class="body-inner">
+                
+                    
+
+<div class="book-header" role="navigation">
+    
+
+    <!-- Title -->
+    <h1>
+        <i class="fa fa-circle-o-notch fa-spin"></i>
+        <a href=".." >附录：G1 自碰撞复现详细指南</a>
+    </h1>
+</div>
+
+
+
+
+                    <div class="page-wrapper" tabindex="-1" role="main">
+                        <div class="page-inner">
+                            
+<div id="book-search-results">
+    <div class="search-noresults">
+    
+                                <section class="normal markdown-section">
+                                
+                                <h1 id="附录：g1-自碰撞避免复现详细指南">附录：G1 自碰撞避免复现详细指南</h1>
+<blockquote>
+<p>本章由 <code>legged_gym/README_SELF_COLLISION.md</code> 迁入，作为 GitBook 附录章节。</p>
+</blockquote>
+<hr></hr>
+<h1 id="g1-人形机器人自碰撞避免（论文复现）训练指南">G1 人形机器人自碰撞避免（论文复现）训练指南</h1>
+<blockquote>
+<p>论文：<em>Humanoid Self-Collision Avoidance Using Whole-Body Control with Control Barrier Functions</em>
+作者：Charles Khazoom, Daniel Gonzalez-Diaz, Yanran Ding, Sangbae Kim（MIT）
+会议：2022 IEEE-RAS 21st International Conference on Humanoid Robots (Humanoids)
+原文 PDF：<code>~/RL/docx/Khazoom 等 - 2022 - Humanoid self-collision avoidance using whole-body control with control barrier functions.pdf</code></p>
+</blockquote>
+<p>本指南在当前的 IsaacGym + RSL-RL + legged_gym 环境上，用 <strong>G1 人形机器人</strong> 复现该论文的核心思想：<strong>在行走训练中避免机器人自身部件之间的碰撞</strong>，并把论文基于控制障碍函数（CBF）的安全保证思想转化为 PPO 强化学习训练中的奖励塑形。</p>
+<hr></hr>
+<h2 id="一、论文核心思想">一、论文核心思想</h2>
+<p>论文面向 MIT Humanoid（18 关节）提出 <strong>CBF-WBC</strong>（基于控制障碍函数的全身控制器）：</p>
+<ol>
+<li><strong>几何近似</strong>：用 4 个球 + 14 个胶囊近似机器人几何，共考虑 <strong>15 个碰撞体对</strong>；</li>
+<li><strong>有符号距离（SDF）</strong>：对每个碰撞体对 AB 定义
+<code>h_AB(q) = ‖pA - pB‖ - (ρA + ρB)</code>（球/胶囊中心距减去两者半径之和）；</li>
+<li><strong>CBF 约束</strong>：把"永不碰撞"编码为前向不变性约束 <code>ḣ + α·h ≥ 0</code>，作为 QP 求解全身控制量的硬约束；</li>
+<li><strong>对比基线（APF）</strong>：人工势场法，当距离 <code>d &lt; d0</code> 时施加 <code>K·(d0-d)²</code> 型软惩罚，仅在阈值内生效。</li>
+</ol>
+<p>结论：CBF 相比 APF 无需精确调节 <code>(K, d0)</code> 两个参数，且在高动态场景（如受外力推搡后恢复、摆腿轨迹与支撑腿交叉）下仍能保证无碰撞。</p>
+<h2 id="二、论文-→-rl-的映射">二、论文 → RL 的映射</h2>
+<p>论文是<strong>控制器</strong>（QP 求解），本仓库是 <strong>PPO 强化学习</strong>。我们把安全保证翻译成奖励塑形：</p>
+<table>
+<thead>
+<tr>
+<th>论文要素</th>
+<th>论文实现</th>
+<th>本复现（RL）实现</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>安全集 <code>h(q) ≥ 0</code></td>
+<td>CBF 硬约束</td>
+<td>碰撞体对中心距 <code>d</code> 与安全距离 <code>safe</code> 之差</td>
+</tr>
+<tr>
+<td>CBF 约束 <code>ḣ+αh≥0</code></td>
+<td>QP 不等式</td>
+<td>指数势垒惩罚 + 接近速率项（见 <code>_reward_self_collision_cbf</code>）</td>
+</tr>
+<tr>
+<td>APF 软惩罚（Eq.23）</td>
+<td>QP 软约束</td>
+<td>位置型二次惩罚（见 <code>_reward_self_collision_apf</code>）</td>
+</tr>
+<tr>
+<td>关节限位 CBF</td>
+<td>QP 约束</td>
+<td>legged_gym 自带 <code>dof_pos_limits</code> / <code>soft_dof_pos_limit</code></td>
+</tr>
+</tbody>
+</table>
+<p>核心公式：</p>
+<pre><code>CBF 势垒惩罚（论文方法）:
+    penalty_pair = exp(-barrier_alpha * (d - safe))  *  (1 + approach_beta * max(0, -d_dot))
+    d_dot = (d - d_prev) / dt      # 接近速率为负
+    -&gt; d == safe 时惩罚≈1；d → 0 时指数增长；两部件快速接近时额外加重
+
+APF 基线惩罚（论文 Eq.23）:
+    penalty_pair = max(0, safe - d)²     # 仅在 d &lt; safe 时生效
+</code></pre><p><code>d_dot</code> 项正是论文 CBF 中 <code>ḣ + αh ≥ 0</code> 的动力学含义：<strong>不仅惩罚距离过近，还惩罚"正在高速接近"</strong>，这是 CBF 优于纯位置 APF 的关键，也是我们复现的重点。</p>
+<h2 id="三、新增文件">三、新增文件</h2>
+<table>
+<thead>
+<tr>
+<th>文件</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>legged_gym/envs/g1/g1_self_collision.py</code></td>
+<td>环境类 <code>G1SelfCollisionRobot</code>：解析碰撞体对、计算中心距、实现 CBF/APF 两个奖励函数</td>
+</tr>
+<tr>
+<td><code>legged_gym/envs/g1/g1_self_collision_config.py</code></td>
+<td>配置类 <code>G1SelfCollisionRoughCfg</code> / <code>G1SelfCollisionRoughCfgPPO</code>：碰撞体对、安全距离、奖励权重、PPO 参数</td>
+</tr>
+<tr>
+<td><code>legged_gym/envs/__init__.py</code></td>
+<td>注册新任务 <code>g1_sc</code></td>
+</tr>
+</tbody>
+</table>
+<h2 id="四、代码说明">四、代码说明</h2>
+<h3 id="41-环境类-g1selfcollisionrobot（g1selfcollisionpy）">4.1 环境类 <code>G1SelfCollisionRobot</code>（<code>g1_self_collision.py</code>）</h3>
+<p>继承 <code>G1Robot</code>，只增加自碰撞相关逻辑，其余（观测、动作、地形、奖励框架）完全复用：</p>
+<pre><code class="lang-python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">_init_self_collision</span>(<span class="hljs-params">self</span>):
+    <span class="hljs-comment"># 从 cfg.self_collision.pairs 逐个解析：</span>
+    <span class="hljs-comment">#   gym.find_actor_rigid_body_handle(env, actor, body_name)</span>
+    <span class="hljs-comment"># 找不到的体（被 collapse_fixed_joints 合并掉）自动跳过</span>
+    ...
+    <span class="hljs-variable language_">self</span>.sc_idx_a / <span class="hljs-variable language_">self</span>.sc_idx_b   <span class="hljs-comment"># 碰撞体对 a、b 的 rigid body 索引</span>
+    <span class="hljs-variable language_">self</span>.sc_safe                    <span class="hljs-comment"># 每对的安全距离 [m]</span>
+    <span class="hljs-variable language_">self</span>.sc_dist_prev               <span class="hljs-comment"># 上一步距离，用于有限差分接近速率</span>
+
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">_sc_distances</span>(<span class="hljs-params">self</span>):
+    <span class="hljs-comment"># 用 rigid_body_states_view（每步由 update_feet_state 刷新）取体位置</span>
+    pos = <span class="hljs-variable language_">self</span>.rigid_body_states_view[:, :, :<span class="hljs-number">3</span>]
+    <span class="hljs-keyword">return</span> torch.norm(pos[:, <span class="hljs-variable language_">self</span>.sc_idx_a, :] - pos[:, <span class="hljs-variable language_">self</span>.sc_idx_b, :], dim=<span class="hljs-number">2</span>)
+</code></pre>
+<p>奖励函数（名字与 config 中 <code>rewards.scales</code> 的 key 一一对应）：</p>
+<pre><code class="lang-python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">_reward_self_collision_cbf</span>(<span class="hljs-params">self</span>):     <span class="hljs-comment"># 论文方法（CBF 势垒）</span>
+    d = <span class="hljs-variable language_">self</span>._sc_distances()
+    d_dot = clamp((d - <span class="hljs-variable language_">self</span>.sc_dist_prev) / <span class="hljs-variable language_">self</span>.dt, ±max_approach_rate)
+    <span class="hljs-variable language_">self</span>.sc_dist_prev = d
+    barrier = exp(-barrier_alpha * (d - <span class="hljs-variable language_">self</span>.sc_safe))
+    approach = <span class="hljs-number">1.0</span> + approach_beta * relu(-d_dot)
+    <span class="hljs-keyword">return</span> <span class="hljs-built_in">sum</span>(barrier * approach, dim=<span class="hljs-number">1</span>)
+
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">_reward_self_collision_apf</span>(<span class="hljs-params">self</span>):     <span class="hljs-comment"># 基线（论文 Eq.23）</span>
+    d = <span class="hljs-variable language_">self</span>._sc_distances()
+    <span class="hljs-keyword">return</span> <span class="hljs-built_in">sum</span>(relu(<span class="hljs-variable language_">self</span>.sc_safe - d) ** <span class="hljs-number">2</span>, dim=<span class="hljs-number">1</span>)
+</code></pre>
+<p><code>reset_idx</code> 中会把 <code>sc_dist_prev</code> 重置为当前距离，避免环境复位导致的距离跳变污染接近速率项。</p>
+<h3 id="42-配置类-g1selfcollisionroughcfg（g1selfcollisionconfigpy）">4.2 配置类 <code>G1SelfCollisionRoughCfg</code>（<code>g1_self_collision_config.py</code>）</h3>
+<p>关键设置：</p>
+<pre><code class="lang-python"><span class="hljs-keyword">class</span> <span class="hljs-title class_">rewards</span>(G1RoughCfg.rewards):
+    only_positive_rewards = <span class="hljs-literal">False</span>          <span class="hljs-comment"># ★ 让负的惩罚项真正生效</span>
+    <span class="hljs-keyword">class</span> <span class="hljs-title class_">scales</span>(G1RoughCfg.rewards.scales):
+        collision = -<span class="hljs-number">0.5</span>                   <span class="hljs-comment"># 原有接触力惩罚</span>
+        self_collision_cbf = -<span class="hljs-number">0.5</span>          <span class="hljs-comment"># CBF 势垒惩罚（论文方法）</span>
+        self_collision_apf = <span class="hljs-number">0.0</span>           <span class="hljs-comment"># APF 基线（对比时再开启）</span>
+
+<span class="hljs-keyword">class</span> <span class="hljs-title class_">self_collision</span>:
+    safe_distance    = <span class="hljs-number">0.10</span>    <span class="hljs-comment"># 默认安全距离 [m]</span>
+    barrier_alpha    = <span class="hljs-number">8.0</span>     <span class="hljs-comment"># 势垒陡峭度</span>
+    approach_beta    = <span class="hljs-number">1.0</span>     <span class="hljs-comment"># 接近速率项权重</span>
+    max_approach_rate = <span class="hljs-number">2.0</span>    <span class="hljs-comment"># 接近速率上限 [m/s]</span>
+    pairs = [
+        (<span class="hljs-string">'left_hip_pitch_link'</span>,  <span class="hljs-string">'right_hip_pitch_link'</span>,  <span class="hljs-number">0.12</span>),  <span class="hljs-comment"># 大腿-大腿</span>
+        (<span class="hljs-string">'left_knee_link'</span>,       <span class="hljs-string">'right_knee_link'</span>,       <span class="hljs-number">0.10</span>),  <span class="hljs-comment"># 小腿-小腿</span>
+        (<span class="hljs-string">'left_hip_pitch_link'</span>,  <span class="hljs-string">'right_knee_link'</span>,       <span class="hljs-number">0.10</span>),  <span class="hljs-comment"># 大腿-小腿（摆腿交叉）</span>
+        (<span class="hljs-string">'right_hip_pitch_link'</span>, <span class="hljs-string">'left_knee_link'</span>,        <span class="hljs-number">0.10</span>),  <span class="hljs-comment"># 大腿-小腿</span>
+        <span class="hljs-comment"># 以下臂部对在 12 关节 URDF 中不存在，会被自动跳过；</span>
+        <span class="hljs-comment"># 若换成带臂的 g1_29dof 会自动激活</span>
+        (<span class="hljs-string">'left_elbow_link'</span>, <span class="hljs-string">'torso_link'</span>, <span class="hljs-number">0.10</span>), ...
+    ]
+</code></pre>
+<blockquote>
+<p><strong>为什么必须 <code>only_positive_rewards = False</code>？</strong>
+legged_gym 基类默认 <code>only_positive_rewards = True</code>，<code>compute_reward()</code> 会把总奖励小于 0 的部分直接裁剪为 0（legged_robot.py:174-175）。在 G1 原始配置下，全部负权重惩罚项都会因此被"剪掉"。开启自碰撞负惩罚后，必须关闭该裁剪，负梯度才能真正反向传播。
+副作用：所有负惩罚项（<code>lin_vel_z</code>、<code>orientation</code>、<code>base_height</code> 等）也开始真实生效——这本来就是它们的语义，训练会稍更保守、更稳。</p>
+</blockquote>
+<h2 id="五、如何运行">五、如何运行</h2>
+<h3 id="51-训练（论文方法-cbf）">5.1 训练（论文方法 CBF）</h3>
+<pre><code class="lang-bash">conda activate isaacgym
+<span class="hljs-built_in">cd</span> ~/RL/code/unitree_rl_gym/unitree_rl_gym
+
+<span class="hljs-comment"># 完整训练（默认 3000 轮，4096 环境，RTX 3060 约 1 小时）</span>
+python legged_gym/scripts/train.py --task=g1_sc --headless
+
+<span class="hljs-comment"># 后台训练（SSH 断开不中断）</span>
+tmux new -s train
+conda activate isaacgym
+<span class="hljs-built_in">cd</span> ~/RL/code/unitree_rl_gym/unitree_rl_gym
+python legged_gym/scripts/train.py --task=g1_sc --headless
+<span class="hljs-comment"># Ctrl+B D 断开；tmux attach -t train 重新查看</span>
+</code></pre>
+<h3 id="52-切换-cbf--apf-对比实验">5.2 切换 CBF / APF 对比实验</h3>
+<p>编辑 <code>g1_self_collision_config.py</code> 中的 <code>rewards.scales</code>，每次只开一个：</p>
+<pre><code class="lang-python"><span class="hljs-comment"># 实验 A（论文方法）：CBF 势垒</span>
+self_collision_cbf = -<span class="hljs-number">0.5</span>
+self_collision_apf = <span class="hljs-number">0.0</span>
+
+<span class="hljs-comment"># 实验 B（基线）：APF 二次惩罚</span>
+self_collision_cbf = <span class="hljs-number">0.0</span>
+self_collision_apf = -<span class="hljs-number">0.5</span>
+</code></pre>
+<p>配合不同 <code>run_name</code>（<code>--run_name=cbf</code> / <code>--run_name=apf</code>）即可在 TensorBoard 里对比两条曲线，对应论文 Fig.4 的对比结论。</p>
+<h3 id="53-查看训练曲线">5.3 查看训练曲线</h3>
+<pre><code class="lang-bash">tensorboard --logdir=~/RL/code/unitree_rl_gym/unitree_rl_gym/logs/
+<span class="hljs-comment"># 关注指标：Train/mean_reward、Episode/rew_self_collision_cbf（应趋近 0）、</span>
+<span class="hljs-comment">#          Policy/mean_noise_std、Loss/*</span>
+</code></pre>
+<h3 id="54-可视化验证">5.4 可视化验证</h3>
+<pre><code class="lang-bash"><span class="hljs-built_in">cd</span> ~/RL/code/unitree_rl_gym/unitree_rl_gym
+python legged_gym/scripts/play.py --task=g1_sc
+</code></pre>
+<p>会加载 <code>logs/g1_sc/</code> 下最新模型并用 IsaacGym 窗口演示。重点观察：</p>
+<ul>
+<li>行走时双腿是否出现交叉/刮蹭（对应论文 Fig.5 摆腿自碰撞场景）；</li>
+<li>受 <code>domain_rand.push_robots</code> 随机推力后恢复过程中是否有自碰撞。</li>
+</ul>
+<h2 id="六、参数调优指南">六、参数调优指南</h2>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>默认</th>
+<th>含义</th>
+<th>调节建议</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>safe_distance</code></td>
+<td>0.10</td>
+<td>安全距离（等价论文的 <code>ρA+ρB</code>）</td>
+<td>调大 → 更保守、更早躲避；调小 → 允许更紧凑动作</td>
+</tr>
+<tr>
+<td><code>barrier_alpha</code></td>
+<td>8.0</td>
+<td>势垒陡峭度</td>
+<td>调大 → 惩罚更集中在贴脸瞬间，远处几乎无惩罚</td>
+</tr>
+<tr>
+<td><code>approach_beta</code></td>
+<td>1.0</td>
+<td>接近速率项权重（CBF 特色）</td>
+<td>调大 → 更强"提前刹车"；设 0 退化为纯位置势垒</td>
+</tr>
+<tr>
+<td><code>max_approach_rate</code></td>
+<td>2.0</td>
+<td>速率项上限 [m/s]</td>
+<td>防止复位/瞬间跳变产生极大惩罚</td>
+</tr>
+<tr>
+<td><code>self_collision_cbf</code></td>
+<td>-0.5</td>
+<td>奖励权重</td>
+<td>与 <code>tracking_lin_vel</code>(=1.0) 等正奖励权衡；权重过大可能不愿动腿</td>
+</tr>
+<tr>
+<td><code>self_collision_apf</code></td>
+<td>0.0</td>
+<td>APF 权重</td>
+<td>同上，仅在 APF 实验时开启</td>
+</tr>
+<tr>
+<td><code>collision</code></td>
+<td>-0.5</td>
+<td>原有接触力惩罚</td>
+<td>保留，作为接触层的兜底</td>
+</tr>
+<tr>
+<td>关节限位</td>
+<td>—</td>
+<td>legged_gym 自带</td>
+<td><code>soft_dof_pos_limit=0.9</code>、<code>dof_pos_limits=-5.0</code> 已覆盖论文的关节限位 CBF</td>
+</tr>
+</tbody>
+</table>
+<p>经验：若训练中 <code>rew_self_collision_cbf</code> 长期不为 0，先调大 <code>barrier_alpha</code>（更聚焦），再考虑调大权重；若机器人"不敢走路"（速度跟踪奖励低），适当调小权重或调大 <code>safe_distance</code> 与 <code>barrier_alpha</code> 的组合，让惩罚更局部。</p>
+<h2 id="七、ppo-训练参数（复用-g1-基线）">七、PPO 训练参数（复用 G1 基线）</h2>
+<p><code>G1SelfCollisionRoughCfgPPO</code> 继承 <code>G1RoughCfgPPO</code>：</p>
+<table>
+<thead>
+<tr>
+<th>项</th>
+<th>值</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>策略网络</td>
+<td>ActorCriticRecurrent（LSTM, hidden 64）</td>
+</tr>
+<tr>
+<td>迭代数 <code>max_iterations</code></td>
+<td>3000（可加大）</td>
+</tr>
+<tr>
+<td>学习率 / 裁剪</td>
+<td>1e-3 / 0.2（自适应 KL）</td>
+</tr>
+<tr>
+<td>实验名</td>
+<td><code>g1_sc</code></td>
+</tr>
+</tbody>
+</table>
+<p>详细 PPO 原理与调参见仓库根目录 <code>README.md</code> 第六章。</p>
+<h2 id="八、复现进度">八、复现进度</h2>
+<ul>
+<li>[x] 新增 <code>g1_sc</code> 任务（环境 + 配置 + 注册）</li>
+<li>[x] 冒烟测试通过（<code>self_collision_cbf</code> 奖励正常参与计算）</li>
+<li>[ ] 完整训练（3000 轮，tmux <code>train</code> 会话中运行）</li>
+<li>[ ] 用 <code>play.py --task=g1_sc</code> 可视化验证无自碰撞行走</li>
+<li>[ ] 可选：<code>g1_sc_apf</code> 对照组训练，与 CBF 对比</li>
+</ul>
+
+                                
+                                </section>
+                            
+    </div>
+    <div class="search-results">
+        <div class="has-results">
+            
+            <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+            <ul class="search-results-list"></ul>
+            
+        </div>
+        <div class="no-results">
+            
+            <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+            
+        </div>
+    </div>
+</div>
+
+                        </div>
+                    </div>
+                
+            </div>
+
+            
+                
+                <a href="07-g1-self-collision.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page: 第七章：G1 人形机器人自碰撞避免论文复现（g1_sc）">
+                    <i class="fa fa-angle-left"></i>
+                </a>
+                
+                
+            
+        
+    </div>
+
+    <script>
+        var gitbook = gitbook || [];
+        gitbook.push(function() {
+            gitbook.page.hasChanged({"page":{"title":"附录：G1 自碰撞复现详细指南","level":"1.9","depth":1,"previous":{"title":"第七章：G1 人形机器人自碰撞避免论文复现（g1_sc）","level":"1.8","depth":1,"path":"guide/07-g1-self-collision.md","ref":"guide/07-g1-self-collision.md","articles":[]},"dir":"ltr"},"config":{"plugins":[],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"theme":"default","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56},"embedFonts":false},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"机器人强化学习环境配置与训练指南","language":"zh","gitbook":"*","description":"基于 NVIDIA IsaacGym + RSL-RL + Unitree RL Gym + MuJoCo 的完整操作手册"},"file":{"path":"guide/08-appendix-g1-sc-detailed.md","mtime":"2026-08-05T16:29:55.479Z","type":"markdown"},"gitbook":{"version":"6.2.2","time":"2026-08-05T16:35:02.261Z"},"basePath":"..","book":{"language":""}});
+        });
+    </script>
+</div>
+
+        
+    <noscript>
+        <style>
+            .honkit-cloak {
+                display: block !important;
+            }
+        </style>
+    </noscript>
+    <script>
+        // Restore sidebar state as critical path for prevent layout shift
+        function __init__getSidebarState(defaultValue){
+            var baseKey = "";
+            var key = baseKey + ":sidebar";
+            try {
+                var value = localStorage[key];
+                if (value === undefined) {
+                    return defaultValue;
+                }
+                var parsed = JSON.parse(value);
+                return parsed == null ? defaultValue : parsed;
+            } catch (e) {
+                return defaultValue;
+            }
+        }
+        function __init__restoreLastSidebarState() {
+            var isMobile = window.matchMedia("(max-width: 600px)").matches;
+            if (isMobile) {
+                // Init last state if not mobile
+                return;
+            }
+            var sidebarState = __init__getSidebarState(true);
+            var book = document.querySelector(".book");
+            // Show sidebar if it enabled
+            if (sidebarState && book) {
+                book.classList.add("without-animation", "with-summary");
+            }
+        }
+
+        try {
+            __init__restoreLastSidebarState();
+        } finally {
+            var book = document.querySelector(".book");
+            book.classList.remove("honkit-cloak");
+        }
+    </script>
+    <script src="../gitbook/gitbook.js"></script>
+    <script src="../gitbook/theme.js"></script>
+    
+        
+        <script src="../gitbook/gitbook-plugin-search/search-engine.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-search/search.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-lunr/lunr.min.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-lunr/search-lunr.js"></script>
+        
+    
+        
+        <script src="../gitbook/@honkit/honkit-plugin-fontsettings/fontsettings.js"></script>
+        
+    
+
+    </body>
+</html>
+

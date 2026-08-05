@@ -1,0 +1,772 @@
+
+<!DOCTYPE HTML>
+<html lang="zh" >
+    <head>
+        <meta charset="UTF-8">
+        <title>第六章：PPO 算法详解与参数调优 · 机器人强化学习环境配置与训练指南</title>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="description" content="">
+        <meta name="generator" content="HonKit 6.2.2">
+        
+        
+        
+    
+    <link rel="stylesheet" href="../gitbook/style.css">
+
+    
+            
+                
+                <link rel="stylesheet" href="../gitbook/@honkit/honkit-plugin-highlight/website.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-search/search.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/@honkit/honkit-plugin-fontsettings/website.css">
+                
+            
+        
+
+    
+
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+
+        
+    
+    
+    <meta name="HandheldFriendly" content="true"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="apple-touch-icon-precomposed" sizes="152x152" href="../gitbook/images/apple-touch-icon-precomposed-152.png">
+    <link rel="shortcut icon" href="../gitbook/images/favicon.ico" type="image/x-icon">
+
+    
+    <link rel="next" href="07-g1-self-collision.html" />
+    
+    
+    <link rel="prev" href="05-notes-and-principles.html" />
+    
+
+    </head>
+    <body>
+        
+<div class="book honkit-cloak">
+    <div class="book-summary">
+        
+            
+<div id="book-search-input" role="search">
+    <input type="text" placeholder="輸入並搜尋" />
+</div>
+
+            
+                <nav role="navigation">
+                
+
+
+<ul class="summary">
+    
+    
+
+    
+
+    
+        
+        
+    
+        <li class="chapter " data-level="1.1" data-path="../">
+            
+                <a href="../">
+            
+                    
+                    简介
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2" data-path="01-install.html">
+            
+                <a href="01-install.html">
+            
+                    
+                    第一章：完整安装与配置
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3" data-path="02-training.html">
+            
+                <a href="02-training.html">
+            
+                    
+                    第二章：训练
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4" data-path="03-viewing-results.html">
+            
+                <a href="03-viewing-results.html">
+            
+                    
+                    第三章：查看训练效果
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5" data-path="04-quick-reference.html">
+            
+                <a href="04-quick-reference.html">
+            
+                    
+                    第四章：常用快捷操作
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6" data-path="05-notes-and-principles.html">
+            
+                <a href="05-notes-and-principles.html">
+            
+                    
+                    第五章：注意事项与原理解释
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter active" data-level="1.7" data-path="06-ppo-details.html">
+            
+                <a href="06-ppo-details.html">
+            
+                    
+                    第六章：PPO 算法详解与参数调优
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8" data-path="07-g1-self-collision.html">
+            
+                <a href="07-g1-self-collision.html">
+            
+                    
+                    第七章：G1 人形机器人自碰撞避免论文复现（g1_sc）
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.9" data-path="08-appendix-g1-sc-detailed.html">
+            
+                <a href="08-appendix-g1-sc-detailed.html">
+            
+                    
+                    附录：G1 自碰撞复现详细指南
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+    
+
+    <li class="divider"></li>
+
+    <li>
+        <a href="https://github.com/honkit/honkit" target="blank" class="gitbook-link">
+            本書使用 HonKit 釋出
+        </a>
+    </li>
+</ul>
+
+
+                </nav>
+            
+        
+    </div>
+
+    <div class="book-body">
+        
+            <div class="body-inner">
+                
+                    
+
+<div class="book-header" role="navigation">
+    
+
+    <!-- Title -->
+    <h1>
+        <i class="fa fa-circle-o-notch fa-spin"></i>
+        <a href=".." >第六章：PPO 算法详解与参数调优</a>
+    </h1>
+</div>
+
+
+
+
+                    <div class="page-wrapper" tabindex="-1" role="main">
+                        <div class="page-inner">
+                            
+<div id="book-search-results">
+    <div class="search-noresults">
+    
+                                <section class="normal markdown-section">
+                                
+                                <h1 id="第六章：ppo-算法详解与参数调优">第六章：PPO 算法详解与参数调优</h1>
+<blockquote>
+<p>本章对应 <code>python legged_gym/scripts/train.py --task=go2 --headless</code> 这条训练命令背后的算法原理、仓库内的具体实现路径，以及参数调节方法。<strong>当前 go2 训练使用的就是 PPO，无需额外切换</strong>——见下文 6.2 的代码链路。</p>
+</blockquote>
+<h3 id="61-ppo-算法是什么">6.1 PPO 算法是什么</h3>
+<p>PPO（Proximal Policy Optimization，近端策略优化）是 OpenA 于 2017 年提出的 <strong>on-policy</strong> 强化学习算法，是目前四足/人形机器人仿真训练（IsaacGym + RSL-RL 生态）的默认算法。核心思想：在<strong>收集数据</strong>和<strong>更新策略</strong>之间反复循环，每次更新时限制新旧策略不要差太远。</p>
+<p><strong>几个关键概念：</strong></p>
+<table>
+<thead>
+<tr>
+<th>概念</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>策略 π(a\</td>
+<td>s)</td>
+<td>给定状态输出动作分布（高斯分布：均值 μ + 标准差 σ），机器人按它采样动作</td>
+</tr>
+<tr>
+<td>轨迹</td>
+<td>一个 episode 内 (s, a, r, s') 的序列</td>
+</tr>
+<tr>
+<td>优势函数 A(s,a)</td>
+<td>该动作"比平均好多少"。A &gt; 0 鼓励该动作，A &lt; 0 抑制</td>
+</tr>
+<tr>
+<td>on-policy</td>
+<td>每次更新用的数据必须由<strong>当前</strong>策略采集，采完即弃（PPO 不用经验回放池）</td>
+</tr>
+</tbody>
+</table>
+<p><strong>训练循环（每轮迭代）：</strong></p>
+<ol>
+<li><strong>收集（Rollout）</strong>：用当前策略在仿真环境里跑 <code>num_steps_per_env</code>（默认 24）步，记录状态、动作、奖励、价值估计；</li>
+<li><strong>计算优势（GAE）</strong>：用 Generalized Advantage Estimation 估计每条轨迹每个状态的 A(s,a)；</li>
+<li><strong>更新（Update）</strong>：把收集的数据打散成 mini-batch，反复用梯度下降更新策略和值网络；</li>
+<li>回到第 1 步，直到跑满 <code>max_iterations</code> 轮。</li>
+</ol>
+<p><strong>PPO 的裁剪目标函数（核心公式）：</strong></p>
+<pre><code>L = E[ min(  r_t · A_t ,  clip(r_t, 1-ε, 1+ε) · A_t )  -  c1 · (V(s_t) - R_t)²  +  c2 · H ]
+     └───────── 策略(policy)损失，clip 就是"近端"约束 ─────────┘  └─值函数损失─┘  └─熵正则─┘
+</code></pre><ul>
+<li>概率比 <code>r_t = π_new(a|s) / π_old(a|s)</code>，衡量新旧策略变化幅度；</li>
+<li><code>clip(r_t, 1-ε, 1+ε)</code> 把比值限制在 [1-ε, 1+ε]（ε = <code>clip_param</code>，默认 0.2）。如果旧策略很想做某动作而新策略不想，比值过大，clip 会<strong>截断</strong>其梯度，防止一次更新步子迈太大导致训练崩掉；</li>
+<li><code>A_t</code> 由 GAE 计算：<code>δ_t = r_t + γ·(1-done)·V(s_{t+1}) - V(s_t)</code>，<code>A_t = δ_t + γ·λ·(1-done)·A_{t+1}</code>（γ 折扣因子，λ 权衡偏差/方差）；</li>
+<li>熵正则项鼓励探索，系数 <code>entropy_coef</code>。</li>
+</ul>
+<p>GAE 中 <code>γ=0.99, λ=0.95</code> 是机器人领域的常用默认值，能较好平衡估计偏差与方差。</p>
+<h3 id="62-本仓库中-ppo-的具体实现（代码链路）">6.2 本仓库中 PPO 的具体实现（代码链路）</h3>
+<p><code>go2</code> 任务的 PPO 实现在 <code>rsl_rl</code>（独立的 RSL-RL 库），训练脚本只负责"把环境和配置接进来"。完整调用链：</p>
+<pre><code>legged_gym/scripts/train.py
+  └─ task_registry.make_alg_runner(env, name="go2")        # legged_gym/utils/task_registry.py:75
+       └─ 读取 GO2RoughCfgPPO（legged_gym/envs/go2/go2_config.py）
+       └─ 创建 OnPolicyRunner(env, cfg, log_dir, device)   # rsl_rl/rsl_rl/runners/on_policy_runner.py
+            ├─ runner 配置(runner_class_name)  → OnPolicyRunner
+            ├─ policy_class_name='ActorCritic' → rsl_rl/modules/actor_critic.py
+            └─ algorithm_class_name='PPO'       → rsl_rl/algorithms/ppo.py
+       └─ ppo_runner.learn(max_iterations, init_at_random_ep_len=True)
+</code></pre><p><strong>ActorCritic 网络（<code>rsl_rl/modules/actor_critic.py</code>）：</strong></p>
+<ul>
+<li>Actor：MLP <code>[512, 256, 128]</code>，输出动作均值；<code>self.std</code> 是<strong>可学习的</strong>初始化为 <code>init_noise_std=1.0</code> 的对数标准差参数（<code>actor_critic.py:85</code>）；</li>
+<li>Critic：MLP <code>[512, 256, 128]</code>，输出状态价值 V(s)；</li>
+<li>激活函数 <code>elu</code>；动作分布为高斯 <code>Normal(mean, std)</code>（<code>actor_critic.py:123</code>）；</li>
+<li>推理（部署）时用 <code>act_inference</code>，直接取均值（<code>actor_critic.py:130</code>）。</li>
+</ul>
+<p><strong>PPO 类（<code>rsl_rl/algorithms/ppo.py:38</code>）关键实现：</strong></p>
+<table>
+<thead>
+<tr>
+<th>阶段</th>
+<th>代码位置</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>采样动作</td>
+<td><code>act()</code> ppo.py:90</td>
+<td>用高斯分布采样动作，同时记录 value / log_prob / mu / sigma</td>
+</tr>
+<tr>
+<td>存轨迹</td>
+<td><code>process_env_step()</code> ppo.py:104</td>
+<td>奖励 + 超时(done) 引导 + 存入 RolloutStorage</td>
+</tr>
+<tr>
+<td>GAE 回报</td>
+<td><code>compute_returns()</code> ppo.py:116</td>
+<td>调用 storage 计算 GAE 优势并归一化</td>
+</tr>
+<tr>
+<td>自适应 KL 学习率</td>
+<td>ppo.py:139-151</td>
+<td><code>schedule='adaptive'</code> 时按 KL 动态调学习率</td>
+</tr>
+<tr>
+<td>策略裁剪损失</td>
+<td>ppo.py:155-159</td>
+<td>公式见 6.1</td>
+</tr>
+<tr>
+<td>值函数损失</td>
+<td>ppo.py:161-169</td>
+<td>裁剪版 MSE（use_clipped_value_loss）</td>
+</tr>
+<tr>
+<td>梯度更新</td>
+<td>ppo.py:174-177</td>
+<td>Adam + <code>max_grad_norm</code> 梯度裁剪</td>
+</tr>
+</tbody>
+</table>
+<p><strong>RolloutStorage（<code>rsl_rl/storage/rollout_storage.py</code>）：</strong></p>
+<ul>
+<li>缓冲大小 = <code>num_envs × num_steps_per_env</code>（4096 × 24）；</li>
+<li>GAE 在 <code>compute_returns()</code>（rollout_storage.py:123）里<strong>逆序</strong>逐帧计算，<code>γ</code>/<code>λ</code> 生效，最后对 advantage 做 z-score 归一化（rollout_storage.py:137）；</li>
+<li>mini-batch 打散由 <code>mini_batch_generator()</code> 完成。</li>
+</ul>
+<p><strong>训练主循环（<code>OnPolicyRunner.learn()</code>，on_policy_runner.py:80）：</strong></p>
+<pre><code>每轮迭代:
+  1. Rollout: 24 步 × 4096 环境, 每步 act→env.step→process_env_step
+  2. compute_returns: GAE 计算优势/回报
+  3. update: 5 epochs × 4 mini-batches = 20 次梯度更新
+  4. log() 输出训练曲线到终端 + TensorBoard
+  5. 每 save_interval=50 轮保存 model_{it}.pt
+</code></pre><blockquote>
+<p><code>init_at_random_ep_len=True</code>：训练开始时给每个环境随机的 episode 初始长度，避免 4096 个环境同时被 reset，制造更均匀的数据分布（on_policy_runner.py:82）。</p>
+</blockquote>
+<h3 id="63-配置文件在哪、如何覆盖">6.3 配置文件在哪、如何覆盖</h3>
+<p>go2 的 PPO 配置 = <code>GO2RoughCfgPPO</code>（只改 2 项）+ 继承的 <code>LeggedRobotCfgPPO</code> 默认值：</p>
+<pre><code>legged_gym/envs/go2/go2_config.py               # GO2RoughCfgPPO —— 任务专属，改动这里
+  继承于
+legged_gym/envs/base/legged_robot_config.py     # LeggedRobotCfgPPO —— 所有任务共用默认值
+</code></pre><p>当前 <code>GO2RoughCfgPPO</code> 只有：</p>
+<pre><code class="lang-python"><span class="hljs-keyword">class</span> <span class="hljs-title class_">GO2RoughCfgPPO</span>( <span class="hljs-title class_ inherited__">LeggedRobotCfgPPO</span> ):
+    <span class="hljs-keyword">class</span> <span class="hljs-title class_">algorithm</span>( LeggedRobotCfgPPO.algorithm ):
+        entropy_coef = <span class="hljs-number">0.01</span>
+    <span class="hljs-keyword">class</span> <span class="hljs-title class_">runner</span>( LeggedRobotCfgPPO.runner ):
+        run_name = <span class="hljs-string">''</span>
+        experiment_name = <span class="hljs-string">'rough_go2'</span>
+</code></pre>
+<p>其余所有 PPO 参数都取自基类。<strong>想调参只需在 <code>GO2RoughCfgPPO</code> 里按同样写法覆盖对应子类</strong>，例如：</p>
+<pre><code class="lang-python"><span class="hljs-keyword">class</span> <span class="hljs-title class_">GO2RoughCfgPPO</span>( <span class="hljs-title class_ inherited__">LeggedRobotCfgPPO</span> ):
+    <span class="hljs-keyword">class</span> <span class="hljs-title class_">algorithm</span>( LeggedRobotCfgPPO.algorithm ):
+        entropy_coef = <span class="hljs-number">0.01</span>
+        learning_rate = <span class="hljs-number">3.e-4</span>          <span class="hljs-comment"># 想从 1e-3 降到 3e-4</span>
+        num_learning_epochs = <span class="hljs-number">5</span>
+        num_mini_batches = <span class="hljs-number">8</span>
+        clip_param = <span class="hljs-number">0.2</span>
+        gamma = <span class="hljs-number">0.99</span>
+        lam = <span class="hljs-number">0.95</span>
+        schedule = <span class="hljs-string">'adaptive'</span>          <span class="hljs-comment"># 或 'fixed'</span>
+        desired_kl = <span class="hljs-number">0.01</span>
+        max_grad_norm = <span class="hljs-number">1.0</span>
+    <span class="hljs-keyword">class</span> <span class="hljs-title class_">policy</span>( LeggedRobotCfgPPO.policy ):
+        init_noise_std = <span class="hljs-number">1.0</span>
+        actor_hidden_dims = [<span class="hljs-number">512</span>, <span class="hljs-number">256</span>, <span class="hljs-number">128</span>]
+        critic_hidden_dims = [<span class="hljs-number">512</span>, <span class="hljs-number">256</span>, <span class="hljs-number">128</span>]
+        activation = <span class="hljs-string">'elu'</span>
+    <span class="hljs-keyword">class</span> <span class="hljs-title class_">runner</span>( LeggedRobotCfgPPO.runner ):
+        num_steps_per_env = <span class="hljs-number">24</span>
+        max_iterations = <span class="hljs-number">1500</span>
+        save_interval = <span class="hljs-number">50</span>
+        run_name = <span class="hljs-string">'ppo_tuned'</span>          <span class="hljs-comment"># 改名字 → 新建独立日志目录</span>
+        experiment_name = <span class="hljs-string">'rough_go2'</span>
+</code></pre>
+<h3 id="64-参数详解与调参建议">6.4 参数详解与调参建议</h3>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>默认值</th>
+<th>作用</th>
+<th>什么时候调</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>clip_param</code></td>
+<td>0.2</td>
+<td>新旧策略概率比的裁剪边界</td>
+<td>训练震荡/奖励骤降 → 调小(0.1)；学习太慢 → 调大(0.3)</td>
+</tr>
+<tr>
+<td><code>gamma</code></td>
+<td>0.99</td>
+<td>未来奖励折扣因子</td>
+<td>一般不动；任务时序长可提高</td>
+</tr>
+<tr>
+<td><code>lam</code></td>
+<td>0.95</td>
+<td>GAE 偏差-方差权衡</td>
+<td>一般不动；噪声大调大(0.99)，环境简单调小(0.9)</td>
+</tr>
+<tr>
+<td><code>entropy_coef</code></td>
+<td>0.01</td>
+<td>熵正则权重，越大探索越强</td>
+<td>过早收敛/探索不足 → 调大(0.02~0.05)；动作抖动 → 调小</td>
+</tr>
+<tr>
+<td><code>num_learning_epochs</code></td>
+<td>5</td>
+<td>每批数据重复更新的轮数</td>
+<td>数据利用率低 → 调大(8~10)；过拟合训练数据 → 调小</td>
+</tr>
+<tr>
+<td><code>num_mini_batches</code></td>
+<td>4</td>
+<td>每轮更新划分的 mini-batch 数</td>
+<td>调大(8~16) 更新更平滑；显存紧张可减小 batch</td>
+</tr>
+<tr>
+<td><code>learning_rate</code></td>
+<td>1e-3</td>
+<td>Adam 初始学习率</td>
+<td>不稳定/发散 → 调小(3e-4~5e-4)；收敛太慢 → 调大</td>
+</tr>
+<tr>
+<td><code>schedule</code></td>
+<td>'adaptive'</td>
+<td>是否用 KL 自适应调学习率</td>
+<td>'adaptive' 通常优于 'fixed'，不追求精确可固定</td>
+</tr>
+<tr>
+<td><code>desired_kl</code></td>
+<td>0.01</td>
+<td>自适应调 LR 的目标 KL</td>
+<td>KL 波动大 → 调大(0.02)</td>
+</tr>
+<tr>
+<td><code>value_loss_coef</code></td>
+<td>1.0</td>
+<td>值函数损失权重</td>
+<td>值网络不稳定 → 调小(0.5)</td>
+</tr>
+<tr>
+<td><code>use_clipped_value_loss</code></td>
+<td>True</td>
+<td>值损失是否裁剪</td>
+<td>保持 True</td>
+</tr>
+<tr>
+<td><code>max_grad_norm</code></td>
+<td>1.0</td>
+<td>梯度裁剪阈值</td>
+<td>梯度爆炸 → 调小(0.5)</td>
+</tr>
+<tr>
+<td><code>init_noise_std</code></td>
+<td>1.0</td>
+<td>初始策略噪声</td>
+<td>训练初期原地打转 → 调大(1.5~2.0)</td>
+</tr>
+<tr>
+<td><code>actor/critic_hidden_dims</code></td>
+<td>[512,256,128]</td>
+<td>网络宽度</td>
+<td>3060 显存紧张可减半；任务复杂可加深</td>
+</tr>
+<tr>
+<td><code>activation</code></td>
+<td>'elu'</td>
+<td>激活函数</td>
+<td>换 relu/tanh 观察效果</td>
+</tr>
+<tr>
+<td><code>num_steps_per_env</code></td>
+<td>24</td>
+<td>每次收集的 rollout 步数</td>
+<td>调大(48) 更稳定但更慢</td>
+</tr>
+<tr>
+<td><code>max_iterations</code></td>
+<td>1500</td>
+<td>总训练迭代数</td>
+<td>不够收敛就加大</td>
+</tr>
+<tr>
+<td><code>save_interval</code></td>
+<td>50</td>
+<td>每多少轮保存模型</td>
+<td>默认即可</td>
+</tr>
+</tbody>
+</table>
+<p><strong>快速诊断表：</strong></p>
+<table>
+<thead>
+<tr>
+<th>现象</th>
+<th>优先尝试</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Mean reward 不涨 / 曲线发散</td>
+<td>调小 <code>learning_rate</code> → 调小 <code>clip_param</code> → 检查 reward 定义</td>
+</tr>
+<tr>
+<td>训练太慢 / 卡在局部最优</td>
+<td>调大 <code>entropy_coef</code>、<code>init_noise_std</code>，调大 <code>num_learning_epochs</code></td>
+</tr>
+<tr>
+<td>动作抖动、输出不稳</td>
+<td>调小 <code>entropy_coef</code>，调大 <code>max_grad_norm</code> 的裁剪</td>
+</tr>
+<tr>
+<td>显存不足 (OOM)</td>
+<td>减小 <code>--num_envs</code>（3060 建议 ≤ 4096）或 <code>actor_hidden_dims</code></td>
+</tr>
+<tr>
+<td>训练早期奖励骤降</td>
+<td>调小 <code>clip_param</code> / <code>learning_rate</code>，启用/检查 <code>schedule='adaptive'</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="65-无需改代码的调参方式">6.5 无需改代码的调参方式</h3>
+<p><code>legged_gym/utils/helpers.py:122</code> 的 <code>get_args()</code> 提供命令行覆盖（<strong>有限</strong>，主要覆盖 runner 部分）：</p>
+<pre><code class="lang-bash"><span class="hljs-built_in">cd</span> ~/RL/code/unitree_rl_gym/unitree_rl_gym
+
+<span class="hljs-comment"># 只改迭代数和随机种子（新 run，不动原日志）</span>
+python legged_gym/scripts/train.py --task=go2 --headless --max_iterations=2000 --seed=42
+
+<span class="hljs-comment"># 改日志实验名/run 名（开独立目录，方便对比不同超参）</span>
+python legged_gym/scripts/train.py --task=go2 --headless --experiment_name=rough_go2 --run_name=ppo_try2
+</code></pre>
+<p>更细粒度的超参（learning_rate、entropy_coef 等）<strong>不支持命令行</strong>，只能改 <code>go2_config.py</code>（见 6.3）。</p>
+<h3 id="66-进阶：lstm-ppo（循环策略）">6.6 进阶：LSTM-PPO（循环策略）</h3>
+<p>如果任务需要记忆历史信息（如复杂地形、历史状态），可切到循环网络 ActorCriticRecurrent（<code>rsl_rl/modules/actor_critic_recurrent.py</code>），支持 LSTM/GRU：</p>
+<pre><code class="lang-python"><span class="hljs-keyword">class</span> <span class="hljs-title class_">GO2RoughCfgPPO</span>( <span class="hljs-title class_ inherited__">LeggedRobotCfgPPO</span> ):
+    <span class="hljs-keyword">class</span> <span class="hljs-title class_">runner</span>( LeggedRobotCfgPPO.runner ):
+        policy_class_name = <span class="hljs-string">'ActorCriticRecurrent'</span>
+        algorithm_class_name = <span class="hljs-string">'PPO'</span>
+    <span class="hljs-keyword">class</span> <span class="hljs-title class_">policy</span>( LeggedRobotCfgPPO.policy ):
+        rnn_type = <span class="hljs-string">'lstm'</span>          <span class="hljs-comment"># 或 'gru'</span>
+        rnn_hidden_size = <span class="hljs-number">512</span>
+        rnn_num_layers = <span class="hljs-number">1</span>
+</code></pre>
+<p>注意：MLP 策略（ActorCritic）一般已足够，LSTM 训练更慢、对时序数据更敏感，非必要不启用。</p>
+<h3 id="67-续训--加载模型">6.7 续训 / 加载模型</h3>
+<p>已完成 run 的模型在 <code>logs/rough_go2/&lt;时间戳&gt;_&lt;run_name&gt;/model_*.pt</code>。续训：</p>
+<pre><code class="lang-bash"><span class="hljs-comment"># 从指定 checkpoint 继续（注意 max_iterations 是"总迭代数"，续训要写更大的值）</span>
+python legged_gym/scripts/train.py --task=go2 --headless --resume --load_run=Aug04_21-40-48_ --checkpoint=1500 --max_iterations=3000
+
+<span class="hljs-comment"># 或只加 --resume，自动加载该实验目录下最新 run 的最新模型</span>
+python legged_gym/scripts/train.py --task=go2 --headless --resume --max_iterations=3000
+</code></pre>
+<h3 id="68-如何监控训练">6.8 如何监控训练</h3>
+<p>终端每轮输出关键指标（on_policy_runner.py:157）：</p>
+<pre><code>Computation: ~95000 steps/s
+Value function loss: 0.1234
+Surrogate loss: 0.0056
+Mean action noise std: 0.48
+Mean reward: 12.34
+Mean episode length: 12.56
+</code></pre><table>
+<thead>
+<tr>
+<th>指标</th>
+<th>含义</th>
+<th>预期</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Mean reward</td>
+<td>每个完成的 episode 平均总奖励</td>
+<td>训练中应单调上升并趋平</td>
+</tr>
+<tr>
+<td>Mean episode length</td>
+<td>平均步长（截断时≈训练轮数内最大）</td>
+<td>应趋于接近 1s/0.005s=200 步（满 episode）</td>
+</tr>
+<tr>
+<td>Value function loss</td>
+<td>值网络回归误差</td>
+<td>应逐渐下降、平稳</td>
+</tr>
+<tr>
+<td>Mean action noise std</td>
+<td>策略当前噪声标准差（从 1.0 开始衰减）</td>
+<td>应随训练下降，说明策略趋于确定</td>
+</tr>
+<tr>
+<td>Surrogate loss</td>
+<td>策略裁剪损失</td>
+<td>小且平稳即可，无需归零</td>
+</tr>
+</tbody>
+</table>
+<p>曲线可视化：</p>
+<pre><code class="lang-bash">tensorboard --logdir=~/RL/code/unitree_rl_gym/unitree_rl_gym/logs/
+</code></pre>
+<p>浏览器访问 <code>http://localhost:6006</code>，关注的标签：<code>Train/mean_reward</code>、<code>Train/mean_episode_length</code>、<code>Loss/*</code>、<code>Policy/mean_noise_std</code>、<code>Loss/learning_rate</code>（adaptive 下应看到自适应变化）。</p>
+
+                                
+                                </section>
+                            
+    </div>
+    <div class="search-results">
+        <div class="has-results">
+            
+            <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+            <ul class="search-results-list"></ul>
+            
+        </div>
+        <div class="no-results">
+            
+            <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+            
+        </div>
+    </div>
+</div>
+
+                        </div>
+                    </div>
+                
+            </div>
+
+            
+                
+                <a href="05-notes-and-principles.html" class="navigation navigation-prev " aria-label="Previous page: 第五章：注意事项与原理解释">
+                    <i class="fa fa-angle-left"></i>
+                </a>
+                
+                
+                <a href="07-g1-self-collision.html" class="navigation navigation-next " aria-label="Next page: 第七章：G1 人形机器人自碰撞避免论文复现（g1_sc）">
+                    <i class="fa fa-angle-right"></i>
+                </a>
+                
+            
+        
+    </div>
+
+    <script>
+        var gitbook = gitbook || [];
+        gitbook.push(function() {
+            gitbook.page.hasChanged({"page":{"title":"第六章：PPO 算法详解与参数调优","level":"1.7","depth":1,"next":{"title":"第七章：G1 人形机器人自碰撞避免论文复现（g1_sc）","level":"1.8","depth":1,"path":"guide/07-g1-self-collision.md","ref":"guide/07-g1-self-collision.md","articles":[]},"previous":{"title":"第五章：注意事项与原理解释","level":"1.6","depth":1,"path":"guide/05-notes-and-principles.md","ref":"guide/05-notes-and-principles.md","articles":[]},"dir":"ltr"},"config":{"plugins":[],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"theme":"default","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56},"embedFonts":false},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"机器人强化学习环境配置与训练指南","language":"zh","gitbook":"*","description":"基于 NVIDIA IsaacGym + RSL-RL + Unitree RL Gym + MuJoCo 的完整操作手册"},"file":{"path":"guide/06-ppo-details.md","mtime":"2026-08-05T16:29:32.563Z","type":"markdown"},"gitbook":{"version":"6.2.2","time":"2026-08-05T16:35:02.261Z"},"basePath":"..","book":{"language":""}});
+        });
+    </script>
+</div>
+
+        
+    <noscript>
+        <style>
+            .honkit-cloak {
+                display: block !important;
+            }
+        </style>
+    </noscript>
+    <script>
+        // Restore sidebar state as critical path for prevent layout shift
+        function __init__getSidebarState(defaultValue){
+            var baseKey = "";
+            var key = baseKey + ":sidebar";
+            try {
+                var value = localStorage[key];
+                if (value === undefined) {
+                    return defaultValue;
+                }
+                var parsed = JSON.parse(value);
+                return parsed == null ? defaultValue : parsed;
+            } catch (e) {
+                return defaultValue;
+            }
+        }
+        function __init__restoreLastSidebarState() {
+            var isMobile = window.matchMedia("(max-width: 600px)").matches;
+            if (isMobile) {
+                // Init last state if not mobile
+                return;
+            }
+            var sidebarState = __init__getSidebarState(true);
+            var book = document.querySelector(".book");
+            // Show sidebar if it enabled
+            if (sidebarState && book) {
+                book.classList.add("without-animation", "with-summary");
+            }
+        }
+
+        try {
+            __init__restoreLastSidebarState();
+        } finally {
+            var book = document.querySelector(".book");
+            book.classList.remove("honkit-cloak");
+        }
+    </script>
+    <script src="../gitbook/gitbook.js"></script>
+    <script src="../gitbook/theme.js"></script>
+    
+        
+        <script src="../gitbook/gitbook-plugin-search/search-engine.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-search/search.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-lunr/lunr.min.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-lunr/search-lunr.js"></script>
+        
+    
+        
+        <script src="../gitbook/@honkit/honkit-plugin-fontsettings/fontsettings.js"></script>
+        
+    
+
+    </body>
+</html>
+
