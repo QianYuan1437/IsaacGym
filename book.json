@@ -1,0 +1,9 @@
+{
+  "title": "机器人强化学习环境配置与训练指南",
+  "description": "基于 NVIDIA IsaacGym + RSL-RL + Unitree RL Gym + MuJoCo 的完整操作手册",
+  "language": "zh",
+  "structure": {
+    "readme": "README.md",
+    "summary": "SUMMARY.md"
+  }
+}
