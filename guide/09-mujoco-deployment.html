@@ -1,0 +1,535 @@
+
+<!DOCTYPE HTML>
+<html lang="zh" >
+    <head>
+        <meta charset="UTF-8">
+        <title>第九章：MuJoCo 部署运行（sim-to-sim） · 机器人强化学习环境配置与训练指南</title>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="description" content="">
+        <meta name="generator" content="HonKit 6.2.2">
+        
+        
+        
+    
+    <link rel="stylesheet" href="../gitbook/style.css">
+
+    
+            
+                
+                <link rel="stylesheet" href="../gitbook/@honkit/honkit-plugin-highlight/website.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-search/search.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/@honkit/honkit-plugin-fontsettings/website.css">
+                
+            
+        
+
+    
+
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+
+        
+    
+    
+    <meta name="HandheldFriendly" content="true"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="apple-touch-icon-precomposed" sizes="152x152" href="../gitbook/images/apple-touch-icon-precomposed-152.png">
+    <link rel="shortcut icon" href="../gitbook/images/favicon.ico" type="image/x-icon">
+
+    
+    
+    <link rel="prev" href="08-appendix-g1-sc-detailed.html" />
+    
+
+    </head>
+    <body>
+        
+<div class="book honkit-cloak">
+    <div class="book-summary">
+        
+            
+<div id="book-search-input" role="search">
+    <input type="text" placeholder="輸入並搜尋" />
+</div>
+
+            
+                <nav role="navigation">
+                
+
+
+<ul class="summary">
+    
+    
+
+    
+
+    
+        
+        
+    
+        <li class="chapter " data-level="1.1" data-path="../">
+            
+                <a href="../">
+            
+                    
+                    简介
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2" data-path="01-install.html">
+            
+                <a href="01-install.html">
+            
+                    
+                    第一章：完整安装与配置
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3" data-path="02-training.html">
+            
+                <a href="02-training.html">
+            
+                    
+                    第二章：训练
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4" data-path="03-viewing-results.html">
+            
+                <a href="03-viewing-results.html">
+            
+                    
+                    第三章：查看训练效果
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5" data-path="04-quick-reference.html">
+            
+                <a href="04-quick-reference.html">
+            
+                    
+                    第四章：常用快捷操作
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6" data-path="05-notes-and-principles.html">
+            
+                <a href="05-notes-and-principles.html">
+            
+                    
+                    第五章：注意事项与原理解释
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7" data-path="06-ppo-details.html">
+            
+                <a href="06-ppo-details.html">
+            
+                    
+                    第六章：PPO 算法详解与参数调优
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8" data-path="07-g1-self-collision.html">
+            
+                <a href="07-g1-self-collision.html">
+            
+                    
+                    第七章：G1 人形机器人自碰撞避免论文复现（g1_sc）
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.9" data-path="08-appendix-g1-sc-detailed.html">
+            
+                <a href="08-appendix-g1-sc-detailed.html">
+            
+                    
+                    附录：G1 自碰撞复现详细指南
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter active" data-level="1.10" data-path="09-mujoco-deployment.html">
+            
+                <a href="09-mujoco-deployment.html">
+            
+                    
+                    第九章：MuJoCo 部署运行（sim-to-sim）
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+    
+
+    <li class="divider"></li>
+
+    <li>
+        <a href="https://github.com/honkit/honkit" target="blank" class="gitbook-link">
+            本書使用 HonKit 釋出
+        </a>
+    </li>
+</ul>
+
+
+                </nav>
+            
+        
+    </div>
+
+    <div class="book-body">
+        
+            <div class="body-inner">
+                
+                    
+
+<div class="book-header" role="navigation">
+    
+
+    <!-- Title -->
+    <h1>
+        <i class="fa fa-circle-o-notch fa-spin"></i>
+        <a href=".." >第九章：MuJoCo 部署运行（sim-to-sim）</a>
+    </h1>
+</div>
+
+
+
+
+                    <div class="page-wrapper" tabindex="-1" role="main">
+                        <div class="page-inner">
+                            
+<div id="book-search-results">
+    <div class="search-noresults">
+    
+                                <section class="normal markdown-section">
+                                
+                                <h1 id="第九章：mujoco-部署运行（sim-to-sim）">第九章：MuJoCo 部署运行（sim-to-sim）</h1>
+<blockquote>
+<p>把 IsaacGym 训练好的策略导出为 TorchScript，放入 MuJoCo 仿真中运行，用于脱离 IsaacGym 环境的快速验证、真实物理对照与后续实物移植。</p>
+</blockquote>
+<h2 id="91-为什么需要-sim-to-sim">9.1 为什么需要 sim-to-sim</h2>
+<p>IsaacGym 的渲染与刚体动力学对训练足够，但：</p>
+<ul>
+<li>依赖 IsaacGym 运行时与 GPU，验证不够轻量；</li>
+<li>与真实机器人/其他仿真（MuJoCo、真实硬件）之间仍有<strong>动力学与解算器差异</strong>，需要提前暴露 sim-to-sim 差距；</li>
+<li>MuJoCo 生态（<code>mujoco</code> Python 包、URDF/MJCF 转换）便于后续接仿真器测试或实物部署。</li>
+</ul>
+<p>本项目 G1 的 IsaacGym 训练模型（<code>g1_12dof.urdf</code>）与 MuJoCo 模型（<code>g1_12dof.xml</code>）共用同一运动学/关节定义，仅需保证<strong>关节顺序、默认姿态、归一化尺度、观测构造</strong>一致即可无缝迁移。</p>
+<h2 id="92-部署链路总览">9.2 部署链路总览</h2>
+<pre><code>训练 (train.py) → 检查点 model_XXXX.pt
+    → play.py 导出 TorchScript（policy_lstm_1.pt / policy_1.pt）
+    → deploy_mujoco.py 加载 .pt + scene.xml，PD 控制 + 策略推理
+    → MuJoCo 仿真窗口 / headless 冒烟
+</code></pre><p>涉及文件：</p>
+<pre><code>deploy/deploy_mujoco/
+├── deploy_mujoco.py            # MuJoCo 运行主脚本（支持 --headless）
+└── configs/
+    ├── g1.yaml                 # 官方 G1 部署配置
+    ├── h1.yaml / h1_2.yaml     # 官方 H1 系列
+    └── g1_sc.yaml              # 本项目自碰撞策略部署配置（新增）
+</code></pre><h2 id="93-导出策略">9.3 导出策略</h2>
+<p><code>play.py</code> 在加载最新检查点后会调用 <code>export_policy_as_jit()</code>：</p>
+<ul>
+<li><strong>MLP 策略</strong> → <code>logs/&lt;exp&gt;/exported/policies/policy_1.pt</code></li>
+<li><strong>LSTM 策略</strong>（g1 / g1_sc 均为 <code>ActorCriticRecurrent</code>）→ <code>logs/&lt;exp&gt;/exported/policies/policy_lstm_1.pt</code>，由 <code>PolicyExporterLSTM</code> 封装 actor + LSTM 记忆（内部维护 hidden/cell state，无需外部管理）</li>
+</ul>
+<pre><code class="lang-bash">conda activate isaacgym
+<span class="hljs-built_in">cd</span> ~/RL/code/unitree_rl_gym/unitree_rl_gym
+
+<span class="hljs-comment"># 导出 g1_sc 策略（--headless 无窗口；--num_envs=1 只加载 1 个机器人）</span>
+python legged_gym/scripts/play.py --task=g1_sc --headless --num_envs=1
+<span class="hljs-comment"># → logs/g1_sc/exported/policies/policy_lstm_1.pt</span>
+</code></pre>
+<h2 id="94-在-mujoco-中运行">9.4 在 MuJoCo 中运行</h2>
+<pre><code class="lang-bash"><span class="hljs-comment"># 图形窗口（需显示器）</span>
+python deploy/deploy_mujoco/deploy_mujoco.py g1_sc.yaml
+
+<span class="hljs-comment"># 无显示器 / CI 冒烟测试</span>
+python deploy/deploy_mujoco/deploy_mujoco.py g1_sc.yaml --headless
+</code></pre>
+<p><code>deploy_mujoco.py</code> 流程：</p>
+<ol>
+<li>读配置（<code>policy_path</code>、<code>xml_path</code>、PD 增益、归一化尺度、命令等）；</li>
+<li><code>MjModel.from_xml_path(scene.xml)</code> 加载 G1 模型（19 qpos / 18 qvel / 12 关节驱动）；</li>
+<li><code>torch.jit.load(policy_lstm_1.pt)</code> 加载策略；</li>
+<li>每个控制周期（<code>control_decimation=10</code> × <code>simulation_dt=0.002s</code>，即 50 Hz）：<ul>
+<li>构造 47 维观测：<code>[ω·0.25 (3), 投影重力 (3), cmd·[2,2,0.25] (3), (q-default)·1.0 (12), q̇·0.05 (12), 上一动作 (12), sin/cos 相位 (2)]</code>（相位周期 0.8 s，与训练 <code>g1_env.py</code> 一致）；</li>
+<li>策略推理得到 12 维动作，映射为目标关节角 <code>target = action·0.25 + default_angles</code>；</li>
+<li>PD 控制器输出力矩：<code>τ = kp·(target-q) + kd·(0-q̇)</code>。</li>
+</ul>
+</li>
+</ol>
+<h2 id="95-g1sc-部署配置说明">9.5 g1_sc 部署配置说明</h2>
+<p><code>configs/g1_sc.yaml</code> 与官方 <code>g1.yaml</code> 唯一区别是 <code>policy_path</code> 指向自碰撞策略的导出文件，其余参数（PD 增益、<code>default_angles</code>、<code>action_scale=0.25</code>、<code>cmd_scale=[2,2,0.25]</code>、<code>num_obs=47</code>、<code>num_actions=12</code>）与训练配置完全一致：</p>
+<pre><code class="lang-yaml"><span class="hljs-attr">policy_path:</span> <span class="hljs-string">"{LEGGED_GYM_ROOT_DIR}/logs/g1_sc/exported/policies/policy_lstm_1.pt"</span>
+<span class="hljs-attr">xml_path:</span>    <span class="hljs-string">"{LEGGED_GYM_ROOT_DIR}/resources/robots/g1_description/scene.xml"</span>
+<span class="hljs-attr">simulation_duration:</span> <span class="hljs-number">60.0</span>
+<span class="hljs-attr">simulation_dt:</span> <span class="hljs-number">0.002</span>
+<span class="hljs-attr">control_decimation:</span> <span class="hljs-number">10</span>
+<span class="hljs-attr">kps:</span> [<span class="hljs-number">100</span>, <span class="hljs-number">100</span>, <span class="hljs-number">100</span>, <span class="hljs-number">150</span>, <span class="hljs-number">40</span>, <span class="hljs-number">40</span>, <span class="hljs-number">100</span>, <span class="hljs-number">100</span>, <span class="hljs-number">100</span>, <span class="hljs-number">150</span>, <span class="hljs-number">40</span>, <span class="hljs-number">40</span>]
+<span class="hljs-attr">kds:</span> [<span class="hljs-number">2</span>, <span class="hljs-number">2</span>, <span class="hljs-number">2</span>, <span class="hljs-number">4</span>, <span class="hljs-number">2</span>, <span class="hljs-number">2</span>, <span class="hljs-number">2</span>, <span class="hljs-number">2</span>, <span class="hljs-number">2</span>, <span class="hljs-number">4</span>, <span class="hljs-number">2</span>, <span class="hljs-number">2</span>]
+<span class="hljs-attr">default_angles:</span> [<span class="hljs-number">-0.1</span>, <span class="hljs-number">0.0</span>, <span class="hljs-number">0.0</span>, <span class="hljs-number">0.3</span>, <span class="hljs-number">-0.2</span>, <span class="hljs-number">0.0</span>, <span class="hljs-number">-0.1</span>, <span class="hljs-number">0.0</span>, <span class="hljs-number">0.0</span>, <span class="hljs-number">0.3</span>, <span class="hljs-number">-0.2</span>, <span class="hljs-number">0.0</span>]
+<span class="hljs-attr">ang_vel_scale:</span> <span class="hljs-number">0.25</span>
+<span class="hljs-attr">dof_pos_scale:</span> <span class="hljs-number">1.0</span>
+<span class="hljs-attr">dof_vel_scale:</span> <span class="hljs-number">0.05</span>
+<span class="hljs-attr">action_scale:</span> <span class="hljs-number">0.25</span>
+<span class="hljs-attr">cmd_scale:</span> [<span class="hljs-number">2.0</span>, <span class="hljs-number">2.0</span>, <span class="hljs-number">0.25</span>]
+<span class="hljs-attr">num_actions:</span> <span class="hljs-number">12</span>
+<span class="hljs-attr">num_obs:</span> <span class="hljs-number">47</span>
+<span class="hljs-attr">cmd_init:</span> [<span class="hljs-number">0.5</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>]   <span class="hljs-comment"># 初始指令：x 向 0.5 m/s 前进</span>
+</code></pre>
+<blockquote>
+<p>注：MuJoCo 关节顺序（左/右各 hip_pitch → hip_roll → hip_yaw → knee → ankle_pitch → ankle_roll）与训练 URDF 一致，<code>d.qpos[7:]</code> / <code>d.qvel[6:]</code> 的切片假设与此对应，勿随意改序。</p>
+</blockquote>
+<h2 id="96-冒烟验证结果（g1sc，headless-5-s）">9.6 冒烟验证结果（g1_sc，headless 5 s）</h2>
+<p>在无显示器环境运行 <code>deploy_mujoco.py --headless</code>（把 <code>simulation_duration</code> 临时改为 5 s）逐秒采样：</p>
+<table>
+<thead>
+<tr>
+<th>时刻</th>
+<th>基座高度</th>
+<th>前进速度</th>
+<th>动作 NaN</th>
+<th>状态 NaN</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1.0 s</td>
+<td>0.775 m</td>
+<td>0.48 m/s</td>
+<td>否</td>
+<td>否</td>
+</tr>
+<tr>
+<td>2.0 s</td>
+<td>0.751 m</td>
+<td>0.63 m/s</td>
+<td>否</td>
+<td>否</td>
+</tr>
+<tr>
+<td>3.0 s</td>
+<td>0.769 m</td>
+<td>0.46 m/s</td>
+<td>否</td>
+<td>否</td>
+</tr>
+<tr>
+<td>4.0 s</td>
+<td>0.774 m</td>
+<td>0.41 m/s</td>
+<td>否</td>
+<td>否</td>
+</tr>
+<tr>
+<td>5.0 s</td>
+<td>0.772 m</td>
+<td>0.46 m/s</td>
+<td>否</td>
+<td>否</td>
+</tr>
+</tbody>
+</table>
+<p>结论：策略在 MuJoCo 中稳定行走（高度 ~0.77 m、速度 ~0.5 m/s 与指令一致），无 NaN，说明模型正确加载且 obs 构造/归一化与训练对齐。</p>
+<h2 id="97-常见问题">9.7 常见问题</h2>
+<table>
+<thead>
+<tr>
+<th>现象</th>
+<th>原因 / 解决</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>FileNotFoundError ... configs/...</code></td>
+<td><code>deploy_mujoco.py</code> 会把配置路径拼到 <code>configs/</code> 目录下，传配置文件名而非绝对路径</td>
+</tr>
+<tr>
+<td>MuJoCo 报模型加载失败</td>
+<td>检查 <code>xml_path</code> 中的相对 include 与 mesh 路径；<code>scene.xml</code> include 的 <code>g1_12dof.xml</code> 需在其同目录</td>
+</tr>
+<tr>
+<td>无显示器报 viewer 错误</td>
+<td>加 <code>--headless</code> 参数运行</td>
+</tr>
+<tr>
+<td>机器人直接摔倒 / 原地抖动</td>
+<td>检查 <code>default_angles</code>、<code>action_scale</code>、归一化尺度是否与训练配置一致；确认 <code>policy_path</code> 指向正确的导出文件</td>
+</tr>
+</tbody>
+</table>
+
+                                
+                                </section>
+                            
+    </div>
+    <div class="search-results">
+        <div class="has-results">
+            
+            <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+            <ul class="search-results-list"></ul>
+            
+        </div>
+        <div class="no-results">
+            
+            <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+            
+        </div>
+    </div>
+</div>
+
+                        </div>
+                    </div>
+                
+            </div>
+
+            
+                
+                <a href="08-appendix-g1-sc-detailed.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page: 附录：G1 自碰撞复现详细指南">
+                    <i class="fa fa-angle-left"></i>
+                </a>
+                
+                
+            
+        
+    </div>
+
+    <script>
+        var gitbook = gitbook || [];
+        gitbook.push(function() {
+            gitbook.page.hasChanged({"page":{"title":"第九章：MuJoCo 部署运行（sim-to-sim）","level":"1.10","depth":1,"previous":{"title":"附录：G1 自碰撞复现详细指南","level":"1.9","depth":1,"path":"guide/08-appendix-g1-sc-detailed.md","ref":"guide/08-appendix-g1-sc-detailed.md","articles":[]},"dir":"ltr"},"config":{"plugins":[],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"theme":"default","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56},"embedFonts":false},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"机器人强化学习环境配置与训练指南","language":"zh","gitbook":"*","description":"基于 NVIDIA IsaacGym + RSL-RL + Unitree RL Gym + MuJoCo 的完整操作手册"},"file":{"path":"guide/09-mujoco-deployment.md","mtime":"2026-08-06T02:17:26.869Z","type":"markdown"},"gitbook":{"version":"6.2.2","time":"2026-08-06T02:17:52.075Z"},"basePath":"..","book":{"language":""}});
+        });
+    </script>
+</div>
+
+        
+    <noscript>
+        <style>
+            .honkit-cloak {
+                display: block !important;
+            }
+        </style>
+    </noscript>
+    <script>
+        // Restore sidebar state as critical path for prevent layout shift
+        function __init__getSidebarState(defaultValue){
+            var baseKey = "";
+            var key = baseKey + ":sidebar";
+            try {
+                var value = localStorage[key];
+                if (value === undefined) {
+                    return defaultValue;
+                }
+                var parsed = JSON.parse(value);
+                return parsed == null ? defaultValue : parsed;
+            } catch (e) {
+                return defaultValue;
+            }
+        }
+        function __init__restoreLastSidebarState() {
+            var isMobile = window.matchMedia("(max-width: 600px)").matches;
+            if (isMobile) {
+                // Init last state if not mobile
+                return;
+            }
+            var sidebarState = __init__getSidebarState(true);
+            var book = document.querySelector(".book");
+            // Show sidebar if it enabled
+            if (sidebarState && book) {
+                book.classList.add("without-animation", "with-summary");
+            }
+        }
+
+        try {
+            __init__restoreLastSidebarState();
+        } finally {
+            var book = document.querySelector(".book");
+            book.classList.remove("honkit-cloak");
+        }
+    </script>
+    <script src="../gitbook/gitbook.js"></script>
+    <script src="../gitbook/theme.js"></script>
+    
+        
+        <script src="../gitbook/gitbook-plugin-search/search-engine.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-search/search.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-lunr/lunr.min.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-lunr/search-lunr.js"></script>
+        
+    
+        
+        <script src="../gitbook/@honkit/honkit-plugin-fontsettings/fontsettings.js"></script>
+        
+    
+
+    </body>
+</html>
+

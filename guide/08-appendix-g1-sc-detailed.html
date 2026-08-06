@@ -56,6 +56,8 @@
     <link rel="shortcut icon" href="../gitbook/images/favicon.ico" type="image/x-icon">
 
     
+    <link rel="next" href="09-mujoco-deployment.html" />
+    
     
     <link rel="prev" href="07-g1-self-collision.html" />
     
@@ -203,6 +205,19 @@
             
         </li>
     
+        <li class="chapter " data-level="1.10" data-path="09-mujoco-deployment.html">
+            
+                <a href="09-mujoco-deployment.html">
+            
+                    
+                    第九章：MuJoCo 部署运行（sim-to-sim）
+            
+                </a>
+            
+
+            
+        </li>
+    
 
     
 
@@ -253,13 +268,7 @@
 <p>本章由 <code>legged_gym/README_SELF_COLLISION.md</code> 迁入，作为 GitBook 附录章节。</p>
 </blockquote>
 <hr></hr>
-<h1 id="g1-人形机器人自碰撞避免（论文复现）训练指南">G1 人形机器人自碰撞避免（论文复现）训练指南</h1>
-<blockquote>
-<p>论文：<em>Humanoid Self-Collision Avoidance Using Whole-Body Control with Control Barrier Functions</em>
-作者：Charles Khazoom, Daniel Gonzalez-Diaz, Yanran Ding, Sangbae Kim（MIT）
-会议：2022 IEEE-RAS 21st International Conference on Humanoid Robots (Humanoids)
-原文 PDF：<code>~/RL/docx/Khazoom 等 - 2022 - Humanoid self-collision avoidance using whole-body control with control barrier functions.pdf</code></p>
-</blockquote>
+<hr></hr>
 <p>本指南在当前的 IsaacGym + RSL-RL + legged_gym 环境上，用 <strong>G1 人形机器人</strong> 复现该论文的核心思想：<strong>在行走训练中避免机器人自身部件之间的碰撞</strong>，并把论文基于控制障碍函数（CBF）的安全保证思想转化为 PPO 强化学习训练中的奖励塑形。</p>
 <hr></hr>
 <h2 id="一、论文核心思想">一、论文核心思想</h2>
@@ -438,6 +447,23 @@ python legged_gym/scripts/play.py --task=g1_sc --num_envs=1
 <li>行走时双腿是否出现交叉/刮蹭（对应论文 Fig.5 摆腿自碰撞场景）；</li>
 <li>受 <code>domain_rand.push_robots</code> 随机推力后恢复过程中是否有自碰撞。</li>
 </ul>
+<h3 id="55-mujoco-部署运行（sim-to-sim）">5.5 MuJoCo 部署运行（sim-to-sim）</h3>
+<p>将 IsaacGym 训练出的策略导出并在 <strong>MuJoCo</strong> 中运行，可脱离 IsaacGym 直接验证真实物理效果（同一 <code>g1_12dof</code> 模型，保证 sim-to-sim 一致性）。</p>
+<pre><code class="lang-bash"><span class="hljs-built_in">cd</span> ~/RL/code/unitree_rl_gym/unitree_rl_gym
+
+<span class="hljs-comment"># 1) 导出策略为 TorchScript（自动生成 logs/g1_sc/exported/policies/policy_lstm_1.pt）</span>
+python legged_gym/scripts/play.py --task=g1_sc --headless --num_envs=1
+
+<span class="hljs-comment"># 2) MuJoCo 中运行（图形窗口；--headless 可无显示器运行，用于 CI/冒烟测试）</span>
+python deploy/deploy_mujoco/deploy_mujoco.py g1_sc.yaml
+python deploy/deploy_mujoco/deploy_mujoco.py g1_sc.yaml --headless
+</code></pre>
+<ul>
+<li>配置文件：<code>deploy/deploy_mujoco/configs/g1_sc.yaml</code>，<code>policy_path</code> 指向导出的 LSTM 策略；其余参数与 g1.yaml 一致（PD 增益、<code>default_angles</code>、归一化尺度、<code>cmd_init=[0.5,0,0]</code> 即 0.5 m/s 前进）；</li>
+<li>观测构造与训练完全一致：47 维 = 角速度(3) + 投影重力(3) + 命令(3) + dof_pos(12) + dof_vel(12) + 上一动作(12) + 相位 sin/cos(2)，相位周期 0.8 s；</li>
+<li>LSTM 记忆由导出模块内部维护（<code>PolicyExporterLSTM</code>），无需手动管理 hidden state；</li>
+<li>冒烟验证（headless 5 s）：基座高度稳定 ~0.77 m、前进速度 ~0.5 m/s、动作与状态无 NaN。</li>
+</ul>
 <h2 id="六、参数调优指南">六、参数调优指南</h2>
 <table>
 <thead>
@@ -564,10 +590,14 @@ python legged_gym/scripts/play.py --task=g1_sc --num_envs=1
 
             
                 
-                <a href="07-g1-self-collision.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page: 第七章：G1 人形机器人自碰撞避免论文复现（g1_sc）">
+                <a href="07-g1-self-collision.html" class="navigation navigation-prev " aria-label="Previous page: 第七章：G1 人形机器人自碰撞避免论文复现（g1_sc）">
                     <i class="fa fa-angle-left"></i>
                 </a>
                 
+                
+                <a href="09-mujoco-deployment.html" class="navigation navigation-next " aria-label="Next page: 第九章：MuJoCo 部署运行（sim-to-sim）">
+                    <i class="fa fa-angle-right"></i>
+                </a>
                 
             
         
@@ -576,7 +606,7 @@ python legged_gym/scripts/play.py --task=g1_sc --num_envs=1
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"附录：G1 自碰撞复现详细指南","level":"1.9","depth":1,"previous":{"title":"第七章：G1 人形机器人自碰撞避免论文复现（g1_sc）","level":"1.8","depth":1,"path":"guide/07-g1-self-collision.md","ref":"guide/07-g1-self-collision.md","articles":[]},"dir":"ltr"},"config":{"plugins":[],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"theme":"default","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56},"embedFonts":false},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"机器人强化学习环境配置与训练指南","language":"zh","gitbook":"*","description":"基于 NVIDIA IsaacGym + RSL-RL + Unitree RL Gym + MuJoCo 的完整操作手册"},"file":{"path":"guide/08-appendix-g1-sc-detailed.md","mtime":"2026-08-06T02:06:02.395Z","type":"markdown"},"gitbook":{"version":"6.2.2","time":"2026-08-06T02:06:14.836Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"附录：G1 自碰撞复现详细指南","level":"1.9","depth":1,"next":{"title":"第九章：MuJoCo 部署运行（sim-to-sim）","level":"1.10","depth":1,"path":"guide/09-mujoco-deployment.md","ref":"guide/09-mujoco-deployment.md","articles":[]},"previous":{"title":"第七章：G1 人形机器人自碰撞避免论文复现（g1_sc）","level":"1.8","depth":1,"path":"guide/07-g1-self-collision.md","ref":"guide/07-g1-self-collision.md","articles":[]},"dir":"ltr"},"config":{"plugins":[],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"theme":"default","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56},"embedFonts":false},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"机器人强化学习环境配置与训练指南","language":"zh","gitbook":"*","description":"基于 NVIDIA IsaacGym + RSL-RL + Unitree RL Gym + MuJoCo 的完整操作手册"},"file":{"path":"guide/08-appendix-g1-sc-detailed.md","mtime":"2026-08-06T02:17:08.689Z","type":"markdown"},"gitbook":{"version":"6.2.2","time":"2026-08-06T02:17:52.075Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>
