@@ -15,7 +15,7 @@
 - [第五章：注意事项与原理解释](guide/05-notes-and-principles.md)
 - [第六章：PPO 算法详解与参数调优](guide/06-ppo-details.md)
 - [第七章：G1 人形机器人自碰撞避免论文复现（g1_sc）](guide/07-g1-self-collision.md)
-- [附录：G1 自碰撞复现详细指南](guide/08-appendix-g1-sc-detailed.md)
+- [第八章：G1 自碰撞复现详细指南（附录）](guide/08-appendix-g1-sc-detailed.md)
 - [第九章：MuJoCo 部署运行（sim-to-sim）](guide/09-mujoco-deployment.md)
 
 ---
@@ -48,7 +48,7 @@
 └── RL/
     ├── README.md                                # GitBook 首页
     ├── SUMMARY.md                               # GitBook 目录导航
-    ├── guide/                                   # GitBook 各章节文件（第一章~附录）
+    ├── guide/                                   # GitBook 各章节文件（第一章~第九章）
     ├── SESSION_STATE.md                         # 会话存档（续接任务用）
     └── code/unitree_rl_gym/
         ├── rsl_rl/                              # RSL-RL (PPO 算法实现)

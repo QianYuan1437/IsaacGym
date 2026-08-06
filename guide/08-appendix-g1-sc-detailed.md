@@ -1,6 +1,6 @@
-# 附录：G1 自碰撞避免复现详细指南
+# 第八章：G1 自碰撞避免复现详细指南（附录）
 
-> 本章由 `legged_gym/README_SELF_COLLISION.md` 迁入，作为 GitBook 附录章节。
+> 本章由 `legged_gym/README_SELF_COLLISION.md` 迁入，作为 GitBook 第八章（附录）。
 
 ---
 

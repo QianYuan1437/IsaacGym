@@ -2,7 +2,7 @@
 
 > 复现论文：*Humanoid Self-Collision Avoidance Using Whole-Body Control with Control Barrier Functions*（Khazoom 等，IEEE-RAS Humanoids 2022，MIT）
 > 论文 PDF：`~/RL/docx/`
-> 完整独立指南：[附录：G1 自碰撞复现详细指南](08-appendix-g1-sc-detailed.md)
+> 完整独立指南：[第八章：G1 自碰撞复现详细指南（附录）](08-appendix-g1-sc-detailed.md)
 > 训练命令：`python legged_gym/scripts/train.py --task=g1_sc --headless`
 
 ### 7.1 论文与复现思路
