@@ -430,7 +430,8 @@ self_collision_apf = -<span class="hljs-number">0.5</span>
 </code></pre>
 <h3 id="54-可视化验证">5.4 可视化验证</h3>
 <pre><code class="lang-bash"><span class="hljs-built_in">cd</span> ~/RL/code/unitree_rl_gym/unitree_rl_gym
-python legged_gym/scripts/play.py --task=g1_sc
+<span class="hljs-comment"># 加 --num_envs=1 只加载 1 个机器人，避免默认 100 个并行环境导致负载过大</span>
+python legged_gym/scripts/play.py --task=g1_sc --num_envs=1
 </code></pre>
 <p>会加载 <code>logs/g1_sc/</code> 下最新模型并用 IsaacGym 窗口演示。重点观察：</p>
 <ul>
@@ -575,7 +576,7 @@ python legged_gym/scripts/play.py --task=g1_sc
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"附录：G1 自碰撞复现详细指南","level":"1.9","depth":1,"previous":{"title":"第七章：G1 人形机器人自碰撞避免论文复现（g1_sc）","level":"1.8","depth":1,"path":"guide/07-g1-self-collision.md","ref":"guide/07-g1-self-collision.md","articles":[]},"dir":"ltr"},"config":{"plugins":[],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"theme":"default","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56},"embedFonts":false},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"机器人强化学习环境配置与训练指南","language":"zh","gitbook":"*","description":"基于 NVIDIA IsaacGym + RSL-RL + Unitree RL Gym + MuJoCo 的完整操作手册"},"file":{"path":"guide/08-appendix-g1-sc-detailed.md","mtime":"2026-08-05T16:29:55.479Z","type":"markdown"},"gitbook":{"version":"6.2.2","time":"2026-08-05T16:35:02.261Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"附录：G1 自碰撞复现详细指南","level":"1.9","depth":1,"previous":{"title":"第七章：G1 人形机器人自碰撞避免论文复现（g1_sc）","level":"1.8","depth":1,"path":"guide/07-g1-self-collision.md","ref":"guide/07-g1-self-collision.md","articles":[]},"dir":"ltr"},"config":{"plugins":[],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"theme":"default","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56},"embedFonts":false},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"机器人强化学习环境配置与训练指南","language":"zh","gitbook":"*","description":"基于 NVIDIA IsaacGym + RSL-RL + Unitree RL Gym + MuJoCo 的完整操作手册"},"file":{"path":"guide/08-appendix-g1-sc-detailed.md","mtime":"2026-08-06T02:06:02.395Z","type":"markdown"},"gitbook":{"version":"6.2.2","time":"2026-08-06T02:06:14.836Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>
