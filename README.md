@@ -77,8 +77,8 @@ cd ~/RL/code/unitree_rl_gym/unitree_rl_gym
 # 训练（详见第二章 / 第七章）
 python legged_gym/scripts/train.py --task=go2 --headless
 
-# 可视化验证（详见第三章）
-python legged_gym/scripts/play.py --task=go2
+# 可视化验证（详见第三章；加 --num_envs=1 只加载 1 个机器人以降低负载）
+python legged_gym/scripts/play.py --task=go2 --num_envs=1
 
 # 监控
 tensorboard --logdir=logs/

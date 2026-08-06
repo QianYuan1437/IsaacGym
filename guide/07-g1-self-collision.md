@@ -42,8 +42,8 @@ cd ~/RL/code/unitree_rl_gym/unitree_rl_gym
 # 训练（默认 3000 轮，RTX 3060 约 1 小时）
 python legged_gym/scripts/train.py --task=g1_sc --headless
 
-# 可视化验证（加载 logs/g1_sc/ 最新模型）
-python legged_gym/scripts/play.py --task=g1_sc
+# 可视化验证（加载 logs/g1_sc/ 最新模型；加 --num_envs=1 只加载 1 个机器人以降低负载）
+python legged_gym/scripts/play.py --task=g1_sc --num_envs=1
 
 # 监控
 tensorboard --logdir=~/RL/code/unitree_rl_gym/unitree_rl_gym/logs/

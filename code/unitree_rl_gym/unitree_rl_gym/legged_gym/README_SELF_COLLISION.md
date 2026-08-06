@@ -173,7 +173,8 @@ tensorboard --logdir=~/RL/code/unitree_rl_gym/unitree_rl_gym/logs/
 
 ```bash
 cd ~/RL/code/unitree_rl_gym/unitree_rl_gym
-python legged_gym/scripts/play.py --task=g1_sc
+# 加 --num_envs=1 只加载 1 个机器人，避免默认 100 个并行环境导致负载过大
+python legged_gym/scripts/play.py --task=g1_sc --num_envs=1
 ```
 
 会加载 `logs/g1_sc/` 下最新模型并用 IsaacGym 窗口演示。重点观察：

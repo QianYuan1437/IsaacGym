@@ -13,6 +13,17 @@ python legged_gym/scripts/play.py --task=go2
 
 > 加载最新训练的模型，使用 IsaacGym 渲染窗口展示机器人行走效果。
 
+#### 只加载单个机器人（降低负载）
+
+`play.py` 默认会加载 `min(num_envs, 100)` 个并行环境（play.py 中 `num_envs = min(4096, 100) = 100`），负载较大。用 `--num_envs=1` 可在命令行覆盖该值，只加载 1 个机器人，负载极低：
+
+```bash
+python legged_gym/scripts/play.py --task=go2 --num_envs=1
+# 其他任务同理：--task=g1 / --task=h1 / --task=g1_sc --num_envs=1
+```
+
+> 原理：`update_cfg_from_args()`（`helpers.py:101-102`）会在 `make_env` 时用命令行 `--num_envs` 覆盖配置里的 `env.num_envs`。
+
 ### 3.2 MuJoCo 部署验证 (G1 / H1)
 
 G1 和 H1 支持 MuJoCo 渲染验证，已提供预训练模型：
