@@ -34,6 +34,8 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser()
     parser.add_argument("config_file", type=str, help="config file name in the config folder")
+    parser.add_argument("--headless", action="store_true", default=False,
+                        help="Run simulation without a viewer (e.g. for CI or headless testing)")
     args = parser.parse_args()
     config_file = args.config_file
     with open(f"{LEGGED_GYM_ROOT_DIR}/deploy/deploy_mujoco/configs/{config_file}", "r") as f:
@@ -76,55 +78,62 @@ if __name__ == "__main__":
     # load policy
     policy = torch.jit.load(policy_path)
 
-    with mujoco.viewer.launch_passive(m, d) as viewer:
-        # Close the viewer automatically after simulation_duration wall-seconds.
-        start = time.time()
-        while viewer.is_running() and time.time() - start < simulation_duration:
-            step_start = time.time()
-            tau = pd_control(target_dof_pos, d.qpos[7:], kps, np.zeros_like(kds), d.qvel[6:], kds)
-            d.ctrl[:] = tau
-            # mj_step can be replaced with code that also evaluates
-            # a policy and applies a control signal before stepping the physics.
-            mujoco.mj_step(m, d)
+    viewer = None
+    if not args.headless:
+        viewer = mujoco.viewer.launch_passive(m, d)
 
-            counter += 1
-            if counter % control_decimation == 0:
-                # Apply control signal here.
+    start = time.time()
+    # Close the viewer automatically after simulation_duration wall-seconds.
+    while time.time() - start < simulation_duration and (viewer is None or viewer.is_running()):
+        step_start = time.time()
+        tau = pd_control(target_dof_pos, d.qpos[7:], kps, np.zeros_like(kds), d.qvel[6:], kds)
+        d.ctrl[:] = tau
+        # mj_step can be replaced with code that also evaluates
+        # a policy and applies a control signal before stepping the physics.
+        mujoco.mj_step(m, d)
 
-                # create observation
-                qj = d.qpos[7:]
-                dqj = d.qvel[6:]
-                quat = d.qpos[3:7]
-                omega = d.qvel[3:6]
+        counter += 1
+        if counter % control_decimation == 0:
+            # Apply control signal here.
 
-                qj = (qj - default_angles) * dof_pos_scale
-                dqj = dqj * dof_vel_scale
-                gravity_orientation = get_gravity_orientation(quat)
-                omega = omega * ang_vel_scale
+            # create observation
+            qj = d.qpos[7:]
+            dqj = d.qvel[6:]
+            quat = d.qpos[3:7]
+            omega = d.qvel[3:6]
 
-                period = 0.8
-                count = counter * simulation_dt
-                phase = count % period / period
-                sin_phase = np.sin(2 * np.pi * phase)
-                cos_phase = np.cos(2 * np.pi * phase)
+            qj = (qj - default_angles) * dof_pos_scale
+            dqj = dqj * dof_vel_scale
+            gravity_orientation = get_gravity_orientation(quat)
+            omega = omega * ang_vel_scale
 
-                obs[:3] = omega
-                obs[3:6] = gravity_orientation
-                obs[6:9] = cmd * cmd_scale
-                obs[9 : 9 + num_actions] = qj
-                obs[9 + num_actions : 9 + 2 * num_actions] = dqj
-                obs[9 + 2 * num_actions : 9 + 3 * num_actions] = action
-                obs[9 + 3 * num_actions : 9 + 3 * num_actions + 2] = np.array([sin_phase, cos_phase])
-                obs_tensor = torch.from_numpy(obs).unsqueeze(0)
-                # policy inference
-                action = policy(obs_tensor).detach().numpy().squeeze()
-                # transform action to target_dof_pos
-                target_dof_pos = action * action_scale + default_angles
+            period = 0.8
+            count = counter * simulation_dt
+            phase = count % period / period
+            sin_phase = np.sin(2 * np.pi * phase)
+            cos_phase = np.cos(2 * np.pi * phase)
 
-            # Pick up changes to the physics state, apply perturbations, update options from GUI.
+            obs[:3] = omega
+            obs[3:6] = gravity_orientation
+            obs[6:9] = cmd * cmd_scale
+            obs[9 : 9 + num_actions] = qj
+            obs[9 + num_actions : 9 + 2 * num_actions] = dqj
+            obs[9 + 2 * num_actions : 9 + 3 * num_actions] = action
+            obs[9 + 3 * num_actions : 9 + 3 * num_actions + 2] = np.array([sin_phase, cos_phase])
+            obs_tensor = torch.from_numpy(obs).unsqueeze(0)
+            # policy inference
+            action = policy(obs_tensor).detach().numpy().squeeze()
+            # transform action to target_dof_pos
+            target_dof_pos = action * action_scale + default_angles
+
+        # Pick up changes to the physics state, update options from GUI.
+        if viewer is not None:
             viewer.sync()
 
-            # Rudimentary time keeping, will drift relative to wall clock.
-            time_until_next_step = m.opt.timestep - (time.time() - step_start)
-            if time_until_next_step > 0:
-                time.sleep(time_until_next_step)
+        # Rudimentary time keeping, will drift relative to wall clock.
+        time_until_next_step = m.opt.timestep - (time.time() - step_start)
+        if time_until_next_step > 0:
+            time.sleep(time_until_next_step)
+
+    if viewer is not None:
+        viewer.close()

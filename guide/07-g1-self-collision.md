@@ -51,3 +51,19 @@ tensorboard --logdir=~/RL/code/unitree_rl_gym/unitree_rl_gym/logs/
 ```
 
 > 训练当前在 tmux 会话 `train` 中运行：`tmux attach -t train` 查看进度。
+
+### 7.5 MuJoCo 部署运行（sim-to-sim）
+
+策略训练完成后可脱离 IsaacGym 在 MuJoCo 中运行（同一 `g1_12dof` 模型）：
+
+```bash
+cd ~/RL/code/unitree_rl_gym/unitree_rl_gym
+
+# 1) 导出策略为 TorchScript（生成 logs/g1_sc/exported/policies/policy_lstm_1.pt）
+python legged_gym/scripts/play.py --task=g1_sc --headless --num_envs=1
+
+# 2) MuJoCo 中运行（--headless 可无显示器运行）
+python deploy/deploy_mujoco/deploy_mujoco.py g1_sc.yaml
+```
+
+配置与原理详见 [第九章：MuJoCo 部署运行（sim-to-sim）](09-mujoco-deployment.md)。冒烟验证结果：机器人稳定行走（高度 ~0.77 m、速度 ~0.5 m/s），无 NaN。

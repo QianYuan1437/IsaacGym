@@ -16,6 +16,7 @@
 - [第六章：PPO 算法详解与参数调优](guide/06-ppo-details.md)
 - [第七章：G1 人形机器人自碰撞避免论文复现（g1_sc）](guide/07-g1-self-collision.md)
 - [附录：G1 自碰撞复现详细指南](guide/08-appendix-g1-sc-detailed.md)
+- [第九章：MuJoCo 部署运行（sim-to-sim）](guide/09-mujoco-deployment.md)
 
 ---
 
@@ -60,7 +61,7 @@
               ├── deploy/
               │   ├── deploy_mujoco/              # MuJoCo 部署与验证
               │   │   ├── deploy_mujoco.py
-              │   │   └── configs/               # g1.yaml, h1.yaml, h1_2.yaml
+              │   │   └── configs/               # g1.yaml, h1.yaml, h1_2.yaml, g1_sc.yaml
               │   ├── deploy_real/               # 实物部署
               │   └── pre_train/                 # 预训练模型 (g1, h1, h1_2)
               └── resources/robots/              # 机器人模型文件
@@ -82,4 +83,8 @@ python legged_gym/scripts/play.py --task=go2 --num_envs=1
 
 # 监控
 tensorboard --logdir=logs/
+
+# MuJoCo 部署运行（详见第九章；需先 play.py 导出策略）
+python legged_gym/scripts/play.py --task=g1_sc --headless --num_envs=1   # 导出 policy_lstm_1.pt
+python deploy/deploy_mujoco/deploy_mujoco.py g1_sc.yaml                   # MuJoCo 运行
 ```

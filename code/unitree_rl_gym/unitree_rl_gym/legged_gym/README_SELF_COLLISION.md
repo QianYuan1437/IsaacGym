@@ -181,6 +181,26 @@ python legged_gym/scripts/play.py --task=g1_sc --num_envs=1
 - 行走时双腿是否出现交叉/刮蹭（对应论文 Fig.5 摆腿自碰撞场景）；
 - 受 `domain_rand.push_robots` 随机推力后恢复过程中是否有自碰撞。
 
+### 5.5 MuJoCo 部署运行（sim-to-sim）
+
+将 IsaacGym 训练出的策略导出并在 **MuJoCo** 中运行，可脱离 IsaacGym 直接验证真实物理效果（同一 `g1_12dof` 模型，保证 sim-to-sim 一致性）。
+
+```bash
+cd ~/RL/code/unitree_rl_gym/unitree_rl_gym
+
+# 1) 导出策略为 TorchScript（自动生成 logs/g1_sc/exported/policies/policy_lstm_1.pt）
+python legged_gym/scripts/play.py --task=g1_sc --headless --num_envs=1
+
+# 2) MuJoCo 中运行（图形窗口；--headless 可无显示器运行，用于 CI/冒烟测试）
+python deploy/deploy_mujoco/deploy_mujoco.py g1_sc.yaml
+python deploy/deploy_mujoco/deploy_mujoco.py g1_sc.yaml --headless
+```
+
+- 配置文件：`deploy/deploy_mujoco/configs/g1_sc.yaml`，`policy_path` 指向导出的 LSTM 策略；其余参数与 g1.yaml 一致（PD 增益、`default_angles`、归一化尺度、`cmd_init=[0.5,0,0]` 即 0.5 m/s 前进）；
+- 观测构造与训练完全一致：47 维 = 角速度(3) + 投影重力(3) + 命令(3) + dof_pos(12) + dof_vel(12) + 上一动作(12) + 相位 sin/cos(2)，相位周期 0.8 s；
+- LSTM 记忆由导出模块内部维护（`PolicyExporterLSTM`），无需手动管理 hidden state；
+- 冒烟验证（headless 5 s）：基座高度稳定 ~0.77 m、前进速度 ~0.5 m/s、动作与状态无 NaN。
+
 ## 六、参数调优指南
 
 | 参数 | 默认 | 含义 | 调节建议 |

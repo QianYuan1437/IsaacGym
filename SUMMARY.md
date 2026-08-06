@@ -9,3 +9,4 @@
 * [第六章：PPO 算法详解与参数调优](guide/06-ppo-details.md)
 * [第七章：G1 人形机器人自碰撞避免论文复现（g1_sc）](guide/07-g1-self-collision.md)
 * [附录：G1 自碰撞复现详细指南](guide/08-appendix-g1-sc-detailed.md)
+* [第九章：MuJoCo 部署运行（sim-to-sim）](guide/09-mujoco-deployment.md)

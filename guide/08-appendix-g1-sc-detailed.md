@@ -4,12 +4,8 @@
 
 ---
 
-# G1 人形机器人自碰撞避免（论文复现）训练指南
+---
 
-> 论文：*Humanoid Self-Collision Avoidance Using Whole-Body Control with Control Barrier Functions*
-> 作者：Charles Khazoom, Daniel Gonzalez-Diaz, Yanran Ding, Sangbae Kim（MIT）
-> 会议：2022 IEEE-RAS 21st International Conference on Humanoid Robots (Humanoids)
-> 原文 PDF：`~/RL/docx/Khazoom 等 - 2022 - Humanoid self-collision avoidance using whole-body control with control barrier functions.pdf`
 
 本指南在当前的 IsaacGym + RSL-RL + legged_gym 环境上，用 **G1 人形机器人** 复现该论文的核心思想：**在行走训练中避免机器人自身部件之间的碰撞**，并把论文基于控制障碍函数（CBF）的安全保证思想转化为 PPO 强化学习训练中的奖励塑形。
 
@@ -186,6 +182,26 @@ python legged_gym/scripts/play.py --task=g1_sc --num_envs=1
 会加载 `logs/g1_sc/` 下最新模型并用 IsaacGym 窗口演示。重点观察：
 - 行走时双腿是否出现交叉/刮蹭（对应论文 Fig.5 摆腿自碰撞场景）；
 - 受 `domain_rand.push_robots` 随机推力后恢复过程中是否有自碰撞。
+
+### 5.5 MuJoCo 部署运行（sim-to-sim）
+
+将 IsaacGym 训练出的策略导出并在 **MuJoCo** 中运行，可脱离 IsaacGym 直接验证真实物理效果（同一 `g1_12dof` 模型，保证 sim-to-sim 一致性）。
+
+```bash
+cd ~/RL/code/unitree_rl_gym/unitree_rl_gym
+
+# 1) 导出策略为 TorchScript（自动生成 logs/g1_sc/exported/policies/policy_lstm_1.pt）
+python legged_gym/scripts/play.py --task=g1_sc --headless --num_envs=1
+
+# 2) MuJoCo 中运行（图形窗口；--headless 可无显示器运行，用于 CI/冒烟测试）
+python deploy/deploy_mujoco/deploy_mujoco.py g1_sc.yaml
+python deploy/deploy_mujoco/deploy_mujoco.py g1_sc.yaml --headless
+```
+
+- 配置文件：`deploy/deploy_mujoco/configs/g1_sc.yaml`，`policy_path` 指向导出的 LSTM 策略；其余参数与 g1.yaml 一致（PD 增益、`default_angles`、归一化尺度、`cmd_init=[0.5,0,0]` 即 0.5 m/s 前进）；
+- 观测构造与训练完全一致：47 维 = 角速度(3) + 投影重力(3) + 命令(3) + dof_pos(12) + dof_vel(12) + 上一动作(12) + 相位 sin/cos(2)，相位周期 0.8 s；
+- LSTM 记忆由导出模块内部维护（`PolicyExporterLSTM`），无需手动管理 hidden state；
+- 冒烟验证（headless 5 s）：基座高度稳定 ~0.77 m、前进速度 ~0.5 m/s、动作与状态无 NaN。
 
 ## 六、参数调优指南
 
